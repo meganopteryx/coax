@@ -27,7 +27,8 @@ public class TitleFade : MonoBehaviour {
         timeFadeOut = timeSustain + durationFadeOut;
     }
 
-	void Start () {
+	void Start () 
+    {
         setAlpha(0.0f);
         initTimes();
 	}
