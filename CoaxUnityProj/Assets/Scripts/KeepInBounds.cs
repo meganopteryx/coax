@@ -10,23 +10,16 @@ public class KeepInBounds : MonoBehaviour {
 	private float minX,minY,maxX,maxY;
 	
 	// Use this for initialization
-	void Start () {       
-        if(bounds){
-            minX = bounds.position.x - bounds.localScale.x/2;
-            minY = bounds.position.y - bounds.localScale.y/2;
-            maxX = bounds.position.x + bounds.localScale.x/2;
-            maxY = bounds.position.y + bounds.localScale.y/2;        
-        }
-        else{
-            Debug.Log("No bounds, use camera bounds");
-            minX = - Camera.main.orthographicSize;
-            minY = - Camera.main.orthographicSize;
-            maxX = Camera.main.orthographicSize;
-            maxY = Camera.main.orthographicSize;
-        }	
+	void Start () 
+    {       
+
 	}
 	
-	void FixedUpdate () {   
+	void FixedUpdate () 
+    {
+        //GetBounds per frame
+        GetBounds();
+
 		//wrap
 		if(transform.position.x < minX){
             transform.position = new Vector3(maxX, transform.position.y,transform.position.z);
@@ -42,4 +35,23 @@ public class KeepInBounds : MonoBehaviour {
         }	
 	
 	}
+
+    void GetBounds()
+    {
+        if (bounds)
+        {
+            minX = bounds.position.x - bounds.localScale.x / 2;
+            minY = bounds.position.y - bounds.localScale.y / 2;
+            maxX = bounds.position.x + bounds.localScale.x / 2;
+            maxY = bounds.position.y + bounds.localScale.y / 2;
+        }
+        else
+        {
+            Debug.Log("No bounds, use camera bounds");
+            minX = -Camera.main.orthographicSize;
+            minY = -Camera.main.orthographicSize;
+            maxX = Camera.main.orthographicSize;
+            maxY = Camera.main.orthographicSize;
+        }	
+    }
 }
