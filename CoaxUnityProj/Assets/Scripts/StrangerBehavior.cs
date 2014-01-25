@@ -24,28 +24,32 @@ public class StrangerBehavior : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		//add logic for when it is hit with sound wave here
-		//if hit with soundwave go to quicktime event thingy minigame
-		//if in quicktime event, do not move, interact differently
-		//else
+	void FixedUpdate () {
+		//if not in quicktime event
 		if(following && player != null){
-			if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
-				Vector3.MoveTowards(transform.position,player.transform.position,maxVelocity);
-			}
+			Debug.Log("Follow playyerrrr");
+			/*if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
+				rigidbody.AddForce(Vector3.MoveTowards(transform.position,player.transform.position,maxVelocity));
+			}*/
 		}
 	}
 	
 	void OnCollisionEnter(Collision c){
-		/*if(c.collider.CompareTag("DirPulse")){
-			
-		}*/
+		//add logic for when it is hit with sound wave here
+		//if hit with soundwave go to quicktime event thingy minigame
+		//if in quicktime event, do not move, interact differently
+		if(c.collider.tag == "ActionPulse"){
+			HearPlayer();
+			Destroy(c.collider.gameObject);
+		}
 	}
 	
-	
+	//for others to call
 	public void HearPlayer(){
-		//just transition to following for now & show true state
-		
+		//just transition to following for now & show true state		
+		revealed = true;
+		following = true;
+		renderer.material.mainTexture = trueAppearance; //instant switch
 	}
 	
 }

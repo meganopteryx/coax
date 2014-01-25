@@ -29,9 +29,7 @@ public class ActionPulse : MonoBehaviour {
 	}
 	
 	IEnumerator StartTimer(){
-		Debug.Log("wait seconds");
 		yield return new WaitForSeconds(waitSeconds);		
 		isFading = true;
-		Debug.Log("isfading = true");
 	}
 }
