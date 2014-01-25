@@ -22,6 +22,7 @@ public class CameraFollow : MonoBehaviour {
 
     void MoveCam()
     {
+        /*
         Vector3 targetPosition;
         Vector3 campos = cam.transform.position;
 
@@ -44,7 +45,7 @@ public class CameraFollow : MonoBehaviour {
             targetPosition.z = Mathf.Lerp(campos.z, -distance, Time.deltaTime * lerpZoomAmount);
         }
         cam.transform.position = Vector3.Lerp(campos, targetPosition, Time.deltaTime * lerpZoomAmount);
-
+        */
         
     }
 }
