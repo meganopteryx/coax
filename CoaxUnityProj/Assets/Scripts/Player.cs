@@ -27,7 +27,7 @@ public class Player : MonoBehaviour {
                 FollowMouse();
                 WSDF();
                 break;
-        }   
+        }
 	}
 
     void FollowMouse()
