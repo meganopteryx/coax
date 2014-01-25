@@ -5,13 +5,14 @@ public class CameraFollow : MonoBehaviour {
 
     public float camZoomLerp = 10.0f;
     public float camMoveLerp = 6.0f;
-    public float maxZoomIn = 50.0f;
-    public float maxZoomOut = 200.0f;
+    //public float maxZoomIn = 50.0f;
+    //public float maxZoomOut = 200.0f;
+    GameObject player;
     
 	// Use this for initialization
 	void Start () 
     {
-	
+        player = GameObject.Find("Player");
 	}
 	
 	// Update is called once per frame
@@ -23,28 +24,16 @@ public class CameraFollow : MonoBehaviour {
     void MoveCam()
     {
         Vector3 targetPosition;
-        Vector3 campos = cam.transform.position;
+        Vector3 campos = camera.transform.position;
 
         //Set Distance
+        float distance = (player.rigidbody.velocity.magnitude *5)+ 15;
 
-        float distance = Vector3.Distance(player.position, enemy.position) * 2.0f;
-        if (distance < maxZoomIn)
-            distance = maxZoomIn;
+        //Lerp Position and z-depth
+        targetPosition = Vector3.Lerp(campos, player.transform.position, Time.deltaTime * camMoveLerp);
+        targetPosition.z = Mathf.Lerp(campos.z, -distance, Time.deltaTime * camZoomLerp);
+        camera.transform.position = Vector3.Lerp(campos, targetPosition, Time.deltaTime * camZoomLerp);
 
-        //Lerp Camera in front of player on maxzoomout (see further ahead)
-        if (distance > maxZoomOut)
-        {
-            targetPosition = Vector3.Lerp(campos, player.position + (player.forward * 40), Time.deltaTime * lerpMoveAmount);
-            targetPosition.z = Mathf.Lerp(campos.z, -maxZoomOut, Time.deltaTime * lerpZoomAmount);
-        }
-        //Lerp Camera between player and enemy
-        else
-        {
-            targetPosition = Vector3.Lerp(campos, (player.position + enemy.position) / 2, Time.deltaTime * lerpMoveAmount);
-            targetPosition.z = Mathf.Lerp(campos.z, -distance, Time.deltaTime * lerpZoomAmount);
-        }
-        cam.transform.position = Vector3.Lerp(campos, targetPosition, Time.deltaTime * lerpZoomAmount);
-
-        
+        //Debug.Log("Dist:"+ distance);
     }
 }
