@@ -30,14 +30,15 @@ public class StrangerBehavior : MonoBehaviour {
 		//if in quicktime event, do not move, interact differently
 		//else
 		if(following && player != null){
-			if(Vector3.Distance(player.position, transform.position) > maxDistance){
-				Vector3.MoveTowards(transform.position,player.position,maxVelocity);
+			if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
+				Vector3.MoveTowards(transform.position,player.transform.position,maxVelocity);
 			}
 		}
 	}
 	
 	
 	public void HearPlayer(){
+		//just transition to following for now & show true state
 		
 	}
 	
