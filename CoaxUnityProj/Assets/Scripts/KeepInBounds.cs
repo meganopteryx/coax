@@ -4,7 +4,8 @@ using System.Collections;
 public class KeepInBounds : MonoBehaviour {
 	
 	public Transform bounds;
-	public bool bounce = true;
+    //public enum WrapOptions {Stop, Bounce, Wrap};
+	//public WrapOptions wrapMode = 0;
 	
 	private float minX,minY,maxX,maxY;
 	
@@ -22,44 +23,23 @@ public class KeepInBounds : MonoBehaviour {
             minY = - Camera.main.orthographicSize;
             maxX = Camera.main.orthographicSize;
             maxY = Camera.main.orthographicSize;
-        }
-	
+        }	
 	}
 	
-	//FixedUpdate is called once every so many milliseconds
-	void FixedUpdate () {                
+	void FixedUpdate () {   
+		//wrap
 		if(transform.position.x < minX){
-            transform.position = new Vector3(minX, transform.position.y,transform.position.z);
-        }
-        else if(transform.position.x > maxX){
             transform.position = new Vector3(maxX, transform.position.y,transform.position.z);
         }
-        if(transform.position.y < minY){
-            transform.position = new Vector3(transform.position.x,minY,transform.position.z);
+        else if(transform.position.x > maxX){
+            transform.position = new Vector3(minX, transform.position.y,transform.position.z);
         }
-        else if(transform.position.y > maxY){
+        if(transform.position.y < minY){
             transform.position = new Vector3(transform.position.x,maxY,transform.position.z);
         }
-		
-		
-        if(gameObject.GetComponent<Rigidbody>()){
-			if(bounce){
-		        if(transform.position.x == minX || transform.position.x == maxX){
-		                rigidbody.velocity.Set(-rigidbody.velocity.x,rigidbody.velocity.y,rigidbody.velocity.z);
-		        }
-		        if(transform.position.y == minY || transform.position.y == maxY){
-		                rigidbody.velocity.Set(rigidbody.velocity.x,-rigidbody.velocity.y,rigidbody.velocity.z);
-		        }
-			}
-			else{
-		        if(transform.position.x == minX || transform.position.x == maxX){
-		                rigidbody.velocity.Set(0,rigidbody.velocity.y,rigidbody.velocity.z);
-		        }
-		        if(transform.position.y == minY || transform.position.y == maxY){
-		                rigidbody.velocity.Set(rigidbody.velocity.x,0,rigidbody.velocity.z);
-		        }
-			}
-        }
+        else if(transform.position.y > maxY){
+            transform.position = new Vector3(transform.position.x,minY,transform.position.z);
+        }	
 	
 	}
 }
