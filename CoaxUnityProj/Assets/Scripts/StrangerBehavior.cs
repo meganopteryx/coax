@@ -36,6 +36,12 @@ public class StrangerBehavior : MonoBehaviour {
 		}
 	}
 	
+	void OnCollisionEnter(Collision c){
+		/*if(c.collider.CompareTag("DirPulse")){
+			
+		}*/
+	}
+	
 	
 	public void HearPlayer(){
 		//just transition to following for now & show true state
