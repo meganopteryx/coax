@@ -5,20 +5,22 @@ using System.Collections;
 public class DirectionalPulseControl : MonoBehaviour {
 	
 	public GameObject pulseObject;
+	float AdditionalSpeed = 100;
 	
-	private float pulseDelaySeconds = .2f;
+	private GameObject tempPulse;
 	
 	// Use this for initialization
-	void Start () {
-		//set key 
-		if( Input.GetKeyDown(KeyCode.Space)|| Input.GetMouseButtonDown(0)){
-			Instantiate(pulseObject,transform.position,transform.rotation);
-		}
-	
+	void Start () {	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if( Input.GetKeyDown(KeyCode.Space)|| Input.GetMouseButtonDown(0)){
+			Debug.Log("PRESSED SPACE");
+			
+			tempPulse = Instantiate(pulseObject,transform.position,transform.rotation) as GameObject;
+			tempPulse.rigidbody.velocity = rigidbody.velocity;
+			tempPulse.rigidbody.AddRelativeForce(new Vector3(0,AdditionalSpeed,0));
+		}
 	}
 }
