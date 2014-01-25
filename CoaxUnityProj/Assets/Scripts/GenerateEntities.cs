@@ -12,10 +12,12 @@ public class GenerateEntities : MonoBehaviour {
 	void Start () {
 		//minX = minY = -5;
 		//maxX = maxY = 5;
+        Transform bounds = GameObject.Find("Boundaries").transform;
 		
 		if(entityType){
 			for(int i=0;i<=numOfEntities;i++){
-				Instantiate(entityType,new Vector3(Random.Range (minX,maxX),Random.Range(minY,maxY),-10),Quaternion.identity);
+				GameObject entity = Instantiate(entityType,new Vector3(Random.Range (minX,maxX),Random.Range(minY,maxY),-10),Quaternion.identity) as GameObject;
+                entity.GetComponent<KeepInBounds>().bounds = bounds;
 			}
 		}
 	}
