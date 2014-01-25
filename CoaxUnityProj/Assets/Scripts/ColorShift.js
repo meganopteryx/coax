@@ -25,20 +25,24 @@ function Awake()
 
 function FixedUpdate () 
 {
+    //hahaha Awesome hack :)
+    if (Random.Range(0,5) != 0)
+        return;
+        
 	countr++;
 	countb++;
 	countg++;
-	if (countr==100)
+	if (countr>=100)
 	{
 		rshift = -rshift;
 		countr = 0;
 	}
-	if (countg==150)
+	if (countg>=150)
 	{
 		gshift = -gshift;
 		countg = 0;
 	}
-	if (countb==200)
+	if (countb>=200)
 	{
 		bshift = -bshift;
 		countb = 0;

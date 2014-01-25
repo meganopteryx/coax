@@ -40,7 +40,7 @@ public class OmniPulse : MonoBehaviour {
             color.r = 0.5f; color.g = 0.5f; color.b = 0.5f; color.a = 0.5f;
 
             //PlaySound
-            audio.PlayOneShot(sndPulse);
+            audio.PlayOneShot(sndPulse, 0.5f);
 
             //Scale-Fade
             for (int i = 0; i < 100; i++)
