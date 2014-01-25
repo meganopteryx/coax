@@ -5,6 +5,7 @@ public class CameraFollow : MonoBehaviour {
 
     public float camZoomLerp = 10.0f;
     public float camMoveLerp = 6.0f;
+    public float camMaxDist = 5.0f;
     //public float maxZoomIn = 50.0f;
     //public float maxZoomOut = 200.0f;
     GameObject player;
@@ -27,7 +28,7 @@ public class CameraFollow : MonoBehaviour {
         Vector3 campos = camera.transform.position;
 
         //Set Distance
-        float distance = (player.rigidbody.velocity.magnitude *5)+ 15;
+        float distance = (player.rigidbody.velocity.magnitude *camMaxDist)+ 15;
 
         //Lerp Position and z-depth
         targetPosition = Vector3.Lerp(campos, player.transform.position, Time.deltaTime * camMoveLerp);
