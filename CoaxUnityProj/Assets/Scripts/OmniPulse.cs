@@ -62,7 +62,7 @@ public class OmniPulse : MonoBehaviour {
             color.r = 0.5f; color.g = 0.5f; color.b = 0.5f; color.a = 0.5f;
 
             //PlaySound
-            audio.PlayOneShot(sndPulse, 1.0f);
+            audio.PlayOneShot(sndPulse, 0.85f);
 
             //Scale-Fade
             for (int i = 0; i < 100; i++)
@@ -105,11 +105,11 @@ public class OmniPulse : MonoBehaviour {
 		
 		int k = Random.Range(1,4);
 		if(k == 1)
-        	audio.PlayOneShot(squarePulse, 1.0f);
+        	audio.PlayOneShot(squarePulse, 0.25f);
 		else if (k == 2)
-        	audio.PlayOneShot(pentPulse, 1.0f);
+        	audio.PlayOneShot(pentPulse, 0.25f);
 		else if (k == 3)
-        	audio.PlayOneShot(hexPulse, 1.0f);
+        	audio.PlayOneShot(hexPulse, 0.25f);
         obj.renderer.material = obj.renderer.materials[i];
         Color clr = obj.renderer.materials[0].GetColor("_TintColor");
         Color origCircleCLR = obj.renderer.materials[0].GetColor("_TintColor");
