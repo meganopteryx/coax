@@ -31,7 +31,10 @@ public class StrangerBehavior : MonoBehaviour {
     int numResponseTries;
 	
 	// Use this for initialization
-	void Start () {
+    void Start()
+    {
+        sndBombBlip = Resources.Load("bombBlip") as AudioClip;
+        sndBomb = Resources.Load("bomb") as AudioClip;
 		if(rigidbody){
 			rigidbody.AddForce(new Vector3(Random.Range (-maxForce,maxForce),Random.Range (-maxForce,maxForce),0));
 		}
@@ -65,18 +68,35 @@ public class StrangerBehavior : MonoBehaviour {
 			c.collider.GetComponent<Collider>().enabled = false;
 		}
 	}
-	
-	void OnTriggerEnter(Collider c){
-        if(following)
-			return;
-		if(c.tag == "ActionPulse")
+
+    void OnTriggerEnter(Collider c)
+    {
+        if (following)
+            return;
+        if (c.tag == "ActionPulse")
         {
-            Debug.Log("col enter");
-			HearPlayer();
-			//Destroy(c.collider.gameObject);
-			c.GetComponent<Collider>().enabled = false;
-		}
-	}
+            //Bomb or Response
+            int bomb = Random.Range(0, 3);
+            if (bomb == 1)
+            {
+                //Kill actionPulse
+                GameObject[] objs = GameObject.FindGameObjectsWithTag("ActionPulse");
+                foreach (GameObject obj in objs)
+                    Destroy(obj);
+
+                blowingUp = true;
+                player.GetComponent<Player>().stopConversing();
+                StartCoroutine(coBomb());
+            }
+            else
+            {
+                Debug.Log("col enter");
+                HearPlayer();
+                //Destroy(c.collider.gameObject);
+                c.GetComponent<Collider>().enabled = false;
+            }
+        }
+    }
 
     void speak()
     {
@@ -154,5 +174,54 @@ public class StrangerBehavior : MonoBehaviour {
 	public void HearPlayer(){
         player.GetComponent<Player>().startConversingWith(gameObject);
 	}
-	
+
+
+    // BOMB
+
+    AudioClip sndBombBlip;
+    AudioClip sndBomb;
+    public bool blowingUp = false;
+    IEnumerator coBomb()
+    {
+        //Blink Color 3 times
+        Color clr = renderer.material.GetColor("_TintColor");
+        clr.r = 1;
+        renderer.material.SetColor("_TintColor", clr);
+        audio.PlayOneShot(sndBombBlip);
+        yield return new WaitForSeconds(0.2f);
+        clr.r = 0;
+        renderer.material.SetColor("_TintColor", clr);
+        audio.PlayOneShot(sndBombBlip);
+        yield return new WaitForSeconds(0.2f);
+        clr.r = 1;
+        renderer.material.SetColor("_TintColor", clr);
+        audio.PlayOneShot(sndBombBlip);
+        yield return new WaitForSeconds(0.2f);
+        clr.r = 0;
+        renderer.material.SetColor("_TintColor", clr);
+        audio.PlayOneShot(sndBombBlip);
+        yield return new WaitForSeconds(0.2f);
+        clr.r = 1;
+        renderer.material.SetColor("_TintColor", clr);
+        audio.PlayOneShot(sndBomb);
+
+
+        //Blow Up
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("Entities");
+        foreach (GameObject obj in objs)
+        {
+            //Boom Baby Boom
+            obj.rigidbody.AddExplosionForce(100, transform.position, 100);
+        }
+
+        for (int i = 0; i < 10; i++)
+        {
+            //FadeOut Circle
+            clr.a -= 0.1f;
+            renderer.material.SetColor("_TintColor", clr);
+            transform.localScale = transform.localScale * 1.5f;
+            yield return new WaitForSeconds(0.05f);
+        }
+        Destroy(gameObject, 0.2f);
+    }
 }
