@@ -23,6 +23,12 @@ public class StrangerBehavior : MonoBehaviour {
 	
 	private GameObject tempPulse;
 	float AdditionalSpeed = 200;
+
+    int numPulsesExpected;
+    float responseTimeExpected;
+
+    int numResponseTriesAllowed = 1;
+    int numResponseTries;
 	
 	// Use this for initialization
 	void Start () {
@@ -71,31 +77,68 @@ public class StrangerBehavior : MonoBehaviour {
 			c.GetComponent<Collider>().enabled = false;
 		}
 	}
-	
-	public void speak()
+
+    void speak()
     {
         // talking one-on-one
         int i = Random.Range(0, responseSounds.Length - 1);
         audio.PlayOneShot(responseSounds[i]);
-		
-        Transform t  = Instantiate(player.transform) as Transform;
-        t.Rotate(new Vector3(0,0,180));
+
+        Transform t = Instantiate(player.transform) as Transform;
+        t.Rotate(new Vector3(0, 0, 180));
 
         tempPulse = Instantiate(speakPulseObject, transform.position, t.rotation) as GameObject;
-        
+
         tempPulse.rigidbody.velocity = rigidbody.velocity;
         tempPulse.rigidbody.AddRelativeForce(new Vector3(0, AdditionalSpeed, 0));
 
         Destroy(t.gameObject);
-
-		StartCoroutine(waitForPlayer());
-	}
+    }
 	
-	IEnumerator waitForPlayer()
-	{
-		yield return new WaitForSeconds(1.0f);
-		player.GetComponent<Player>().allowSpeak();
+	public void engagePlayer()
+    {
+        numPulsesExpected = Random.Range(1, 5);
+        responseTimeExpected = numPulsesExpected * 1.0f;
+        numResponseTries = 0;
+
+		StartCoroutine(sendPings());
 	}
+	IEnumerator sendPings()
+	{
+        for (int i = 0; i < numPulsesExpected; i++)
+        {
+            speak();
+            yield return new WaitForSeconds(0.5f);
+        }
+		player.GetComponent<Player>().requestSpeak(numPulsesExpected, responseTimeExpected);
+	}
+
+    IEnumerator win()
+    {
+        yield return new WaitForSeconds(1f);
+        follow();
+        reveal();
+        player.GetComponent<Player>().stopConversing();
+    }
+
+    public void responseFromPlayer(int numPulses)
+    {
+        numResponseTries++;
+        if (numPulses == numPulsesExpected)
+        {
+            StartCoroutine(win());
+        }
+        else if (numResponseTries == numResponseTriesAllowed)
+        {
+            // failure
+            player.GetComponent<Player>().stopConversing();
+        }
+        else
+        {
+            // try again
+            StartCoroutine(sendPings());
+        }
+    }
 	
 	public void reveal()
 	{

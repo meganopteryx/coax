@@ -19,12 +19,7 @@ public class DirectionalPulseControl : MonoBehaviour {
         var p = GameObject.Find("Player").GetComponent<Player>();
 		if( Input.GetKeyDown(KeyCode.Space)|| Input.GetMouseButtonDown(0)){
 
-            if (p.isConversing && p.canSpeak)
-            {
-				// one-on-one chat
-				p.speak();
-			}
-			else if (!p.isConversing)
+            if (!p.isConversing)
 			{
 				// calling out
                 audio.PlayOneShot(actionSound);

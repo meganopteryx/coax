@@ -28,7 +28,10 @@ public class Player : MonoBehaviour {
 	
 	private GameObject tempPulse;
 	float AdditionalSpeed = 200;
-	
+
+    int numPulsesExpected;
+    float responseTimeAllowed;
+    int numPulsesSpoken;
 
     void setOtherStrangersAlpha(float alpha)
     {
@@ -41,60 +44,58 @@ public class Player : MonoBehaviour {
             s.renderer.material.SetColor("_TintColor", newColor);
         }
     }
-	
-	public void allowSpeak()
-	{
-		canSpeak = true;
-	}
-	
-	public void speak()
-	{
-		// talking one-on-one
-        int i = Random.Range(0, responseSounds.Length - 1);
-        audio.PlayOneShot(responseSounds[i]);
+
+    // initiate conversation state variables and call on stranger to engage
+    public void startConversingWith(GameObject stranger)
+    {
+        //gameObject.GetComponent<OmniPulse>().stopPulse();
 
         canSpeak = false;
+        isConversing = true;
+        engagedStranger = stranger;
+        setOtherStrangersAlpha(0);
+
+        convoPingCount = 0;
+
+        StartCoroutine(waitForStranger());
+    }
+    IEnumerator waitForStranger()
+    {
+        yield return new WaitForSeconds(1f);
+        engagedStranger.GetComponent<StrangerBehavior>().engagePlayer();
+    }
+	
+    // Called by stranger initiating a conversation "test"
+	public void requestSpeak(int numPulsesExpected, float responseTimeAllowed)
+	{
+        this.numPulsesExpected = numPulsesExpected;
+        this.responseTimeAllowed = responseTimeAllowed;
+        numPulsesSpoken = 0;
+
+        canSpeak = true;
+		
+		StartCoroutine(respondToStranger());
+    }
+    IEnumerator respondToStranger()
+    {
+        yield return new WaitForSeconds(this.responseTimeAllowed);
+        engagedStranger.GetComponent<StrangerBehavior>().responseFromPlayer(numPulsesSpoken);
+    }
+
+    // Send a single ping
+    void speak()
+    {
+        numPulsesSpoken++;
+
+        // talking one-on-one
+        int i = Random.Range(0, responseSounds.Length - 1);
+        audio.PlayOneShot(responseSounds[i]);
 
         tempPulse = Instantiate(speakPulseObject, transform.position, transform.rotation) as GameObject;
         tempPulse.rigidbody.velocity = rigidbody.velocity;
         tempPulse.rigidbody.AddRelativeForce(new Vector3(0, AdditionalSpeed, 0));
-		
-		convoPingCount++;
-		if (convoPingCount == convoPingLimit) {
-			StartCoroutine(transitionConvoOut());
-		}
-		else {
-			StartCoroutine(waitForStranger());
-		}
-	}
-
-    void succeed()
-    {
-        var s = engagedStranger.GetComponent<StrangerBehavior>();
-        s.follow();
-        s.reveal();
     }
 	
-	IEnumerator waitForStranger()
-	{
-		canSpeak = false;
-		yield return new WaitForSeconds(1);
-		engagedStranger.GetComponent<StrangerBehavior>().speak();
-	}
-
-    public void startConversingWith(GameObject stranger)
-    {
-        gameObject.GetComponent<OmniPulse>().stopPulse();
-
-		canSpeak = false;
-        isConversing = true;
-        engagedStranger = stranger;
-        setOtherStrangersAlpha(0);
-		
-		convoPingCount = 0;
-
-        StartCoroutine(waitForStranger());
-    }
 	
 	void updateConvoDistance()
 	{
@@ -121,7 +122,6 @@ public class Player : MonoBehaviour {
     IEnumerator transitionConvoOut()
     {
         yield return new WaitForSeconds(1.0f);
-        succeed();
         stopConversing();
     }
 
@@ -136,7 +136,7 @@ public class Player : MonoBehaviour {
     IEnumerator startOmniPulse()
     {
         yield return new WaitForSeconds(1);
-        gameObject.GetComponent<OmniPulse>().startPulse();
+        //gameObject.GetComponent<OmniPulse>().startPulse();
     }
 
     void Start () 
@@ -171,7 +171,11 @@ public class Player : MonoBehaviour {
         if (isConversing)
         {
             pointPlayerAtEngagedStranger();
-			updateConvoDistance();
+            updateConvoDistance();
+            if (canSpeak && (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)))
+            {
+                speak();
+            }
         }
 	}
 
