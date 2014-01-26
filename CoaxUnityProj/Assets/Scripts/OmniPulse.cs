@@ -11,12 +11,18 @@ public class OmniPulse : MonoBehaviour {
     GameObject pulse;
     AudioClip sndPulse;
 
-
+	AudioClip squarePulse;
+	AudioClip hexPulse;
+	AudioClip pentPulse;
+	
 	// Use this for initialization
 	void Start () 
     {
         player = GameObject.Find("Player").transform;
         sndPulse = Resources.Load("sndPulse") as AudioClip;
+        squarePulse = Resources.Load("squareResponse") as AudioClip;
+        hexPulse = Resources.Load("hexResponse") as AudioClip;
+        pentPulse = Resources.Load("pentResponse") as AudioClip;
         startPulse();
 	}
 
@@ -94,7 +100,16 @@ public class OmniPulse : MonoBehaviour {
 
     IEnumerator coSwapEntity(GameObject obj)
     {
-        int i = 5;//Random.Range(2, 5);
+		
+        int i = 5;//Random.Range(2, 5); //always triangle
+		
+		int k = Random.Range(1,4);
+		if(k == 1)
+        	audio.PlayOneShot(squarePulse, 1.0f);
+		else if (k == 2)
+        	audio.PlayOneShot(pentPulse, 1.0f);
+		else if (k == 3)
+        	audio.PlayOneShot(hexPulse, 1.0f);
         obj.renderer.material = obj.renderer.materials[i];
         Color clr = obj.renderer.materials[0].GetColor("_TintColor");
         Color origCircleCLR = obj.renderer.materials[0].GetColor("_TintColor");
