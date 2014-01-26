@@ -62,6 +62,13 @@ public class Player : MonoBehaviour {
 			StartCoroutine(waitForStranger());
 		}
 	}
+
+    void succeed()
+    {
+        var s = engagedStranger.GetComponent<StrangerBehavior>();
+        s.follow();
+        s.reveal();
+    }
 	
 	IEnumerator waitForStranger()
 	{
@@ -109,6 +116,7 @@ public class Player : MonoBehaviour {
     IEnumerator transitionConvoOut()
     {
         yield return new WaitForSeconds(1.0f);
+        succeed();
         stopConversing();
     }
 
