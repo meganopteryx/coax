@@ -50,8 +50,8 @@ public class StrangerBehavior : MonoBehaviour {
 			return;
 		if(c.collider.tag == "ActionPulse")
         {
-			if(responseSounds[strangerType])
-				audio.PlayOneShot(responseSounds[strangerType]);
+			//if(responseSounds[strangerType])
+			//	audio.PlayOneShot(responseSounds[strangerType]);
             Debug.Log("col enter");
 			HearPlayer();
 			//Destroy(c.collider.gameObject);

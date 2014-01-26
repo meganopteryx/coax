@@ -9,6 +9,8 @@ public class Player : MonoBehaviour {
     public float maxTurnSpeed = 10;
     public float maxSpeed = 100;
     public float thrust = 15;
+
+    public AudioClip[] responseSounds;
 	
 	public GameObject speakPulseObject;
 
