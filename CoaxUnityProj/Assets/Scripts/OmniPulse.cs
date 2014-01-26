@@ -28,6 +28,8 @@ public class OmniPulse : MonoBehaviour {
 
     IEnumerator coPulse()
     {
+        ArrayList swapped = new ArrayList();
+
         while (1 != 0) //ForEvaAndaDay
         {
             //Make A Pulse
@@ -59,8 +61,10 @@ public class OmniPulse : MonoBehaviour {
                 {
                     //CheckDist from Player
                     dist = Vector3.Distance(player.position, obj.transform.position);
-                    if (dist < i * 10)
+                    float scale = i;
+                    if (dist < scale/7 && swapped.Contains(obj) == false)
                     {
+                        swapped.Add(obj);
                         StartCoroutine(coSwapEntity(obj));
                     }
 
@@ -68,6 +72,7 @@ public class OmniPulse : MonoBehaviour {
                 yield return new WaitForSeconds(pulseFadeTime);
             }
             Destroy(pulse, 0);
+            swapped.Clear();
 
             yield return new WaitForSeconds(pulseFrequency);
         }
@@ -75,7 +80,31 @@ public class OmniPulse : MonoBehaviour {
 
     IEnumerator coSwapEntity(GameObject obj)
     {
-        //obj.renderer.material.mainTexture = obj.renderer.material.GetTexture("TrueImage");
-        yield return new WaitForSeconds(0.0f);
+        int i = Random.Range(1, 4);
+        obj.renderer.material = obj.renderer.materials[i];
+        Color clr = obj.renderer.materials[i].GetColor("_TintColor");
+        
+        //SetAllTranslucent
+        clr.a = 0;
+        obj.renderer.materials[0].SetColor("_TintColor", clr);
+        obj.renderer.materials[1].SetColor("_TintColor", clr);
+        obj.renderer.materials[2].SetColor("_TintColor", clr);
+        obj.renderer.materials[3].SetColor("_TintColor", clr);
+
+        //Set THE one alpha
+        clr.a = 1;
+        obj.renderer.materials[i].SetColor("_TintColor", clr);
+        yield return new WaitForSeconds(0.02f);
+
+        //Set Back to Circle
+        clr.a = 0;
+        obj.renderer.materials[1].SetColor("_TintColor", clr);
+        obj.renderer.materials[2].SetColor("_TintColor", clr);
+        obj.renderer.materials[3].SetColor("_TintColor", clr);
+        
+        clr.a = 1;
+        obj.renderer.material = obj.renderer.materials[0];
+        //obj.renderer.materials[0].SetColor("_TintColor", clr);
+
     }
 }
