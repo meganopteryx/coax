@@ -14,10 +14,25 @@ public class Player : MonoBehaviour {
     public bool isConversing = false;
     public GameObject engagedStranger;
 
+    void setOtherStrangersAlpha(float alpha)
+    {
+        foreach (GameObject s in GameObject.FindGameObjectsWithTag("Entities"))
+        {
+            if (s != engagedStranger)
+            {
+                Color oldColor = s.renderer.material.GetColor("_TintColor");
+                Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, alpha);
+                s.renderer.material.SetColor("_TintColor", newColor);
+            }
+        }
+    }
+
     public void startConversingWith(GameObject stranger)
     {
         isConversing = true;
         engagedStranger = stranger;
+        setOtherStrangersAlpha(0);
+
         StartCoroutine(tempConvoStopper());
     }
 
@@ -29,6 +44,7 @@ public class Player : MonoBehaviour {
 
     public void stopConversing()
     {
+        setOtherStrangersAlpha(1);
         isConversing = false;
         engagedStranger = null;
     }
