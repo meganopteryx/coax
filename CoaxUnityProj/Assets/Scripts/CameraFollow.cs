@@ -3,6 +3,7 @@ using System.Collections;
 
 public class CameraFollow : MonoBehaviour {
 
+    public float camRotateLerp = 6.0f;
     public float camZoomLerp = 10.0f;
     public float camMoveLerp = 6.0f;
     public float camMaxDist = 5.0f;
@@ -24,16 +25,39 @@ public class CameraFollow : MonoBehaviour {
 
     void MoveCam()
     {
-        Vector3 targetPosition;
         Vector3 campos = camera.transform.position;
+        Player p = player.GetComponent<Player>();
+        float targetAngle;
 
-        //Set Distance
-        float distance = (player.rigidbody.velocity.magnitude *camMaxDist)+ 15;
+        if (p.isConversing)
+        {
+            float distance = 15f;
+            Vector3 targetPosition = Vector3.Lerp(
+               campos,
+               (p.transform.position + p.engagedStranger.transform.position) / 2,
+               Time.deltaTime * camMoveLerp);
+            targetPosition.z = Mathf.Lerp(campos.z, -distance, Time.deltaTime * camZoomLerp);
+            camera.transform.position = Vector3.Lerp(campos, targetPosition, Time.deltaTime * camZoomLerp);
 
-        //Lerp Position and z-depth
-        targetPosition = Vector3.Lerp(campos, player.transform.position, Time.deltaTime * camMoveLerp);
-        targetPosition.z = Mathf.Lerp(campos.z, -distance, Time.deltaTime * camZoomLerp);
-        camera.transform.position = Vector3.Lerp(campos, targetPosition, Time.deltaTime * camZoomLerp);
+            targetAngle = player.transform.rotation.z;
+        }
+        else
+        {
+            //Set Distance
+            float distance = (player.rigidbody.velocity.magnitude * camMaxDist) + 15;
+
+            //Lerp Position and z-depth
+            Vector3 targetPosition = Vector3.Lerp(campos, player.transform.position, Time.deltaTime * camMoveLerp);
+            targetPosition.z = Mathf.Lerp(campos.z, -distance, Time.deltaTime * camZoomLerp);
+            camera.transform.position = Vector3.Lerp(campos, targetPosition, Time.deltaTime * camZoomLerp);
+
+            targetAngle = 0;
+        }
+
+        camera.transform.rotation = Quaternion.Lerp(
+            camera.transform.rotation,
+            Quaternion.Euler(0, 0, targetAngle * 180f / Mathf.PI),
+            Time.deltaTime * camRotateLerp);
 
         //Debug.Log("Dist:"+ distance);
     }

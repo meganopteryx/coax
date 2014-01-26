@@ -9,7 +9,27 @@ public class Player : MonoBehaviour {
     public float maxTurnSpeed = 10;
     public float maxSpeed = 100;
     public float thrust = 15;
-    
+
+    public float stageDist = 5.0f;
+    public bool isConversing = false;
+    public GameObject engagedStranger;
+
+    public void startConversingWith(GameObject stranger)
+    {
+        isConversing = true;
+        engagedStranger = stranger;
+
+        // make player face stranger
+        Vector3 v = stranger.transform.position - transform.position;
+        float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
+    }
+
+    public void stopConversing()
+    {
+        isConversing = false;
+        engagedStranger = null;
+    }
 
     void Start () 
     {
@@ -25,8 +45,11 @@ public class Player : MonoBehaviour {
             case ControlScheme.CONTROLLER:
                 break;
             default: //Mouse-WSDF default
-                FollowMouse();
-                WSDF();
+                if (!isConversing) {
+                    FollowMouse();
+                    WSDF();
+                }
+
                 break;
         }
 	}
