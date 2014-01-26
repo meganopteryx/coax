@@ -62,7 +62,7 @@ public class OmniPulse : MonoBehaviour {
                     //CheckDist from Player
                     dist = Vector3.Distance(player.position, obj.transform.position);
                     float scale = i;
-                    if (dist < scale/7 && swapped.Contains(obj) == false)
+                    if (dist < scale/4 && swapped.Contains(obj) == false)
                     {
                         swapped.Add(obj);
                         StartCoroutine(coSwapEntity(obj));
@@ -80,7 +80,7 @@ public class OmniPulse : MonoBehaviour {
 
     IEnumerator coSwapEntity(GameObject obj)
     {
-        int i = Random.Range(1, 4);
+        int i = Random.Range(2, 5);
         obj.renderer.material = obj.renderer.materials[i];
         Color clr = obj.renderer.materials[i].GetColor("_TintColor");
         
@@ -94,17 +94,18 @@ public class OmniPulse : MonoBehaviour {
         //Set THE one alpha
         clr.a = 1;
         obj.renderer.materials[i].SetColor("_TintColor", clr);
-        yield return new WaitForSeconds(0.02f);
+        yield return new WaitForSeconds(0.1f);
 
         //Set Back to Circle
         clr.a = 0;
         obj.renderer.materials[1].SetColor("_TintColor", clr);
         obj.renderer.materials[2].SetColor("_TintColor", clr);
         obj.renderer.materials[3].SetColor("_TintColor", clr);
+        obj.renderer.materials[4].SetColor("_TintColor", clr);
         
         clr.a = 1;
-        obj.renderer.material = obj.renderer.materials[0];
-        //obj.renderer.materials[0].SetColor("_TintColor", clr);
+        obj.renderer.material = obj.renderer.materials[1]; 
+        obj.renderer.materials[0].SetColor("_TintColor", clr); 
 
     }
 }
