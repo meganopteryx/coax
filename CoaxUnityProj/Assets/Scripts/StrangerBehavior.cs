@@ -75,8 +75,8 @@ public class StrangerBehavior : MonoBehaviour {
 	public void speak()
     {
         // talking one-on-one
-        //int i = Random.Range(0, responseSounds.Length - 1);
-        //audio.PlayOneShot(responseSounds[i]);
+        int i = Random.Range(0, responseSounds.Length - 1);
+        audio.PlayOneShot(responseSounds[i]);
 		
         Transform t  = Instantiate(player.transform) as Transform;
         t.Rotate(new Vector3(0,0,180));
