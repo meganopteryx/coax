@@ -8,6 +8,8 @@ public class StrangerBehavior : MonoBehaviour {
 	//these should match with the types
 	public AudioClip[] responseSounds;
 	public Texture2D[] trueAppearances;
+
+    public Texture2D[] responseArcs;
 	
 	[HideInInspector]
 	public int strangerType = 0;
@@ -108,7 +110,8 @@ public class StrangerBehavior : MonoBehaviour {
         t.Rotate(new Vector3(0, 0, 180));
 
         tempPulse = Instantiate(speakPulseObject, transform.position, t.rotation) as GameObject;
-
+        i = Random.Range(0, responseArcs.Length - 1);
+        tempPulse.renderer.material.mainTexture = responseArcs[i];
         tempPulse.rigidbody.velocity = rigidbody.velocity;
         tempPulse.rigidbody.AddRelativeForce(new Vector3(0, AdditionalSpeed, 0));
 
