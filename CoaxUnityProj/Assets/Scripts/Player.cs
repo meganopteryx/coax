@@ -10,7 +10,7 @@ public class Player : MonoBehaviour {
     public float maxSpeed = 100;
     public float thrust = 15;
 
-    public float stageDist = 5.0f;
+    public float stageDist = 2f;
     public bool isConversing = false;
     public GameObject engagedStranger;
 
@@ -35,6 +35,28 @@ public class Player : MonoBehaviour {
 
         StartCoroutine(tempConvoStopper());
     }
+	
+	void updateConvoDistance()
+	{
+		if (!isConversing) {
+			return;
+		}
+		var speed = 3.0f;
+		
+		Vector3 v = engagedStranger.transform.position - transform.position;
+		Vector3 targetPosition;
+		if (v.magnitude > 0) {
+			targetPosition = transform.position + v.normalized * stageDist;
+		}
+		else {
+			targetPosition = transform.position + new Vector3(0,stageDist,0);
+		}
+		engagedStranger.transform.position = Vector3.Lerp(
+			engagedStranger.transform.position,
+			targetPosition,
+			Time.deltaTime * speed);
+	}
+	
 
     IEnumerator tempConvoStopper()
     {
@@ -82,6 +104,7 @@ public class Player : MonoBehaviour {
         if (isConversing)
         {
             pointPlayerAtEngagedStranger();
+			updateConvoDistance();
         }
 	}
 

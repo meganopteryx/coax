@@ -30,7 +30,7 @@ public class StrangerBehavior : MonoBehaviour {
 	
 	void FixedUpdate () {
 		//if not in quicktime event
-		if(following && player != null){
+		if(following && player != null && !player.GetComponent<Player>().isConversing){
 			if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
       			transform.position = Vector3.Lerp(transform.position, player.transform.position, Time.deltaTime);
 			}
