@@ -30,14 +30,13 @@ public class Player : MonoBehaviour {
 
     void setOtherStrangersAlpha(float alpha)
     {
+        float a;
         foreach (GameObject s in GameObject.FindGameObjectsWithTag("Entities"))
         {
-            if (s != engagedStranger)
-            {
-                Color oldColor = s.renderer.material.GetColor("_TintColor");
-                Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, alpha);
-                s.renderer.material.SetColor("_TintColor", newColor);
-            }
+            a = (s == engagedStranger) ? 1f : alpha;
+            Color oldColor = s.renderer.material.GetColor("_TintColor");
+            Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, a);
+            s.renderer.material.SetColor("_TintColor", newColor);
         }
     }
 	
@@ -73,6 +72,8 @@ public class Player : MonoBehaviour {
 
     public void startConversingWith(GameObject stranger)
     {
+        gameObject.GetComponent<OmniPulse>().stopPulse();
+
 		canSpeak = false;
         isConversing = true;
         engagedStranger = stranger;
@@ -116,6 +117,13 @@ public class Player : MonoBehaviour {
         setOtherStrangersAlpha(1);
         isConversing = false;
         engagedStranger = null;
+        StartCoroutine(startOmniPulse());
+    }
+
+    IEnumerator startOmniPulse()
+    {
+        yield return new WaitForSeconds(1);
+        gameObject.GetComponent<OmniPulse>().startPulse();
     }
 
     void Start () 

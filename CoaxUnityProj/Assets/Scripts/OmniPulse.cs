@@ -17,8 +17,22 @@ public class OmniPulse : MonoBehaviour {
     {
         player = GameObject.Find("Player").transform;
         sndPulse = Resources.Load("sndPulse") as AudioClip;
-        StartCoroutine(coPulse());
+        startPulse();
 	}
+
+    public void startPulse()
+    {
+        StartCoroutine("coPulse");
+    }
+
+    public void stopPulse()
+    {
+        StopCoroutine("coPulse");
+        if (pulse)
+        {
+            Destroy(pulse, 0);
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () 
