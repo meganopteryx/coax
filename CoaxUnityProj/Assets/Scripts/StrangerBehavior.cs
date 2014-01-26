@@ -17,7 +17,12 @@ public class StrangerBehavior : MonoBehaviour {
 	private float minDistance = 1; //distance from player
 	private float maxDistance = 3;
 	
+	public GameObject speakPulseObject;
+	
 	private GameObject player;
+	
+	private GameObject tempPulse;
+	float AdditionalSpeed = 200;
 	
 	// Use this for initialization
 	void Start () {
@@ -66,12 +71,35 @@ public class StrangerBehavior : MonoBehaviour {
 		}
 	}
 	
+	public void speak()
+	{
+		// TODO: play random sound from bank
+		
+        tempPulse = Instantiate(speakPulseObject, transform.position, transform.rotation) as GameObject;
+        tempPulse.rigidbody.velocity = rigidbody.velocity;
+        tempPulse.rigidbody.AddRelativeForce(new Vector3(0, AdditionalSpeed, 0));
+		
+		StartCoroutine(waitForPlayer());
+	}
+	
+	IEnumerator waitForPlayer()
+	{
+		yield return new WaitForSeconds(1.0f);
+		player.GetComponent<Player>().allowSpeak();
+	}
+	
+	public void reveal()
+	{
+		renderer.material.mainTexture = trueAppearances[strangerType]; //instant switch
+	}
+	
+	public void follow()
+	{
+		following = true;
+	}
+	
 	//for others to call
 	public void HearPlayer(){
-		//just transition to following for now & show true state
-		following = true;
-		renderer.material.mainTexture = trueAppearances[strangerType]; //instant switch
-
         player.GetComponent<Player>().startConversingWith(gameObject);
 	}
 	

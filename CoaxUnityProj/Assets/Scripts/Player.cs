@@ -9,10 +9,24 @@ public class Player : MonoBehaviour {
     public float maxTurnSpeed = 10;
     public float maxSpeed = 100;
     public float thrust = 15;
+	
+	public GameObject speakPulseObject;
 
     public float stageDist = 2f;
+	
+	[HideInInspector]
     public bool isConversing = false;
+	[HideInInspector]
+	public bool canSpeak = true;
+	[HideInInspector]
     public GameObject engagedStranger;
+	
+	int convoPingLimit = 2;
+	int convoPingCount;
+	
+	private GameObject tempPulse;
+	float AdditionalSpeed = 200;
+	
 
     void setOtherStrangersAlpha(float alpha)
     {
@@ -26,14 +40,47 @@ public class Player : MonoBehaviour {
             }
         }
     }
+	
+	public void allowSpeak()
+	{
+		canSpeak = true;
+	}
+	
+	public void speak()
+	{
+		// talking one-on-one
+        //audio.PlayOneShot(actionSound);
+
+        tempPulse = Instantiate(speakPulseObject, transform.position, transform.rotation) as GameObject;
+        tempPulse.rigidbody.velocity = rigidbody.velocity;
+        tempPulse.rigidbody.AddRelativeForce(new Vector3(0, AdditionalSpeed, 0));
+		
+		convoPingCount++;
+		if (convoPingCount == convoPingLimit) {
+			StartCoroutine(transitionConvoOut());
+		}
+		else {
+			StartCoroutine(waitForStranger());
+		}
+	}
+	
+	IEnumerator waitForStranger()
+	{
+		canSpeak = false;
+		yield return new WaitForSeconds(1);
+		engagedStranger.GetComponent<StrangerBehavior>().speak();
+	}
 
     public void startConversingWith(GameObject stranger)
     {
+		canSpeak = false;
         isConversing = true;
         engagedStranger = stranger;
         setOtherStrangersAlpha(0);
+		
+		convoPingCount = 0;
 
-        StartCoroutine(tempConvoStopper());
+        StartCoroutine(waitForStranger());
     }
 	
 	void updateConvoDistance()
@@ -58,9 +105,9 @@ public class Player : MonoBehaviour {
 	}
 	
 
-    IEnumerator tempConvoStopper()
+    IEnumerator transitionConvoOut()
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.0f);
         stopConversing();
     }
 
@@ -73,7 +120,6 @@ public class Player : MonoBehaviour {
 
     void Start () 
     {
-       
 	}
 
     void pointPlayerAtEngagedStranger()
