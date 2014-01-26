@@ -16,7 +16,7 @@ public class GenerateEntities : MonoBehaviour {
 		
 		if(entityType){
 			for(int i=0;i<=numOfEntities;i++){
-				GameObject entity = Instantiate(entityType,new Vector3(Random.Range (minX,maxX),Random.Range(minY,maxY),-10),Quaternion.identity) as GameObject;
+				GameObject entity = Instantiate(entityType,new Vector3(Random.Range (minX,maxX),Random.Range(minY,maxY),-9+Random.Range(-0.5f,0.5f)),Quaternion.identity) as GameObject;
                 entity.GetComponent<KeepInBounds>().bounds = bounds;
 			}
 		}

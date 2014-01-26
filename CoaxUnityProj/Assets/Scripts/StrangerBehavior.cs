@@ -28,14 +28,19 @@ public class StrangerBehavior : MonoBehaviour {
 		//if not in quicktime event
 		if(following && player != null){
 			//Debug.Log("Follow playyerrrr");
-			/*if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
-				rigidbody.AddForce(Vector3.MoveTowards(transform.position,player.transform.position,maxVelocity));
-			}*/
+			if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
+      			transform.position = Vector3.Lerp(transform.position, player.transform.position, Time.deltaTime);
+				//rigidbody.AddForce(Vector3.MoveTowards(transform.position,player.transform.position,maxVelocity));
+			}
+			else if(Vector3.Distance(player.transform.position, transform.position) > minDistance){
+      			transform.position = Vector3.Lerp(transform.position, player.transform.position, Time.deltaTime*Random.Range(.2f,.6f));
+			}
 		}
 	}
 	
 	void OnCollisionEnter(Collision c){
-        
+        if(following)
+			return;
 		//add logic for when it is hit with sound wave here
 		//if hit with soundwave go to quicktime event thingy minigame
 		//if in quicktime event, do not move, interact differently
@@ -43,7 +48,23 @@ public class StrangerBehavior : MonoBehaviour {
         {
             Debug.Log("col enter");
 			HearPlayer();
-			Destroy(c.collider.gameObject);
+			//Destroy(c.collider.gameObject);
+			c.collider.GetComponent<Collider>().enabled = false;
+		}
+	}
+	
+	void OnTriggerEnter(Collider c){
+        if(following)
+			return;
+		//add logic for when it is hit with sound wave here
+		//if hit with soundwave go to quicktime event thingy minigame
+		//if in quicktime event, do not move, interact differently
+		if(c.tag == "ActionPulse")
+        {
+            Debug.Log("col enter");
+			HearPlayer();
+			//Destroy(c.collider.gameObject);
+			c.GetComponent<Collider>().enabled = false;
 		}
 	}
 	
