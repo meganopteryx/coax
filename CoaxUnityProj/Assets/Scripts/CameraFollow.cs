@@ -39,7 +39,9 @@ public class CameraFollow : MonoBehaviour {
             targetPosition.z = Mathf.Lerp(campos.z, -distance, Time.deltaTime * camZoomLerp);
             camera.transform.position = Vector3.Lerp(campos, targetPosition, Time.deltaTime * camZoomLerp);
 
-            targetAngle = player.transform.rotation.z;
+            targetAngle = Mathf.Atan2(
+                p.engagedStranger.transform.position.y - p.transform.position.y,
+                p.engagedStranger.transform.position.x - p.transform.position.x);
         }
         else
         {

@@ -18,11 +18,13 @@ public class Player : MonoBehaviour {
     {
         isConversing = true;
         engagedStranger = stranger;
+        StartCoroutine(tempConvoStopper());
+    }
 
-        // make player face stranger
-        Vector3 v = stranger.transform.position - transform.position;
-        float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
+    IEnumerator tempConvoStopper()
+    {
+        yield return new WaitForSeconds(2.0f);
+        stopConversing();
     }
 
     public void stopConversing()
@@ -35,6 +37,14 @@ public class Player : MonoBehaviour {
     {
        
 	}
+
+    void pointPlayerAtEngagedStranger()
+    {
+        // make player face stranger
+        Vector3 v = engagedStranger.transform.position - transform.position;
+        float angle = Mathf.Atan2(v.y, v.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
+    }
 	
 	// Update is called once per frame
 	void Update () 
@@ -51,6 +61,11 @@ public class Player : MonoBehaviour {
                 }
 
                 break;
+        }
+
+        if (isConversing)
+        {
+            pointPlayerAtEngagedStranger();
         }
 	}
 

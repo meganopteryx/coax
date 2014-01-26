@@ -72,7 +72,7 @@ public class StrangerBehavior : MonoBehaviour {
 		following = true;
 		renderer.material.mainTexture = trueAppearances[strangerType]; //instant switch
 
-        //player.GetComponent<Player>().startConversingWith(gameObject);
+        player.GetComponent<Player>().startConversingWith(gameObject);
 	}
 	
 }
