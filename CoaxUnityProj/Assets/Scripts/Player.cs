@@ -50,7 +50,10 @@ public class Player : MonoBehaviour {
 	public void speak()
 	{
 		// talking one-on-one
-        //audio.PlayOneShot(actionSound);
+        int i = Random.Range(0, responseSounds.Length - 1);
+        audio.PlayOneShot(responseSounds[i]);
+
+        canSpeak = false;
 
         tempPulse = Instantiate(speakPulseObject, transform.position, transform.rotation) as GameObject;
         tempPulse.rigidbody.velocity = rigidbody.velocity;
