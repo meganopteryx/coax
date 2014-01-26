@@ -5,6 +5,7 @@ using System.Collections;
 public class DirectionalPulseControl : MonoBehaviour {
 	
 	public GameObject pulseObject;
+	public AudioClip actionSound;
 	float AdditionalSpeed = 200;
 	
 	private GameObject tempPulse;
@@ -17,6 +18,7 @@ public class DirectionalPulseControl : MonoBehaviour {
 	void Update () {
 		if( Input.GetKeyDown(KeyCode.Space)|| Input.GetMouseButtonDown(0)){
 			Debug.Log("PRESSED SPACE");
+			audio.PlayOneShot(actionSound);
 			
 			tempPulse = Instantiate(pulseObject,transform.position,transform.rotation) as GameObject;
 			tempPulse.rigidbody.velocity = rigidbody.velocity;

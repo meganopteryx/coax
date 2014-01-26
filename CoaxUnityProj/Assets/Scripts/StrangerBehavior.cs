@@ -5,7 +5,11 @@ public class StrangerBehavior : MonoBehaviour {
 	
 	public float maxForce = 50;
 	public float maxVelocity = 5;
-	public Texture2D trueAppearance;
+	//these should match with the types
+	public AudioClip[] responseSounds;
+	public Texture2D[] trueAppearances;
+	
+	private int strangerType = 0;
 	
 	private bool following = false;
 	private bool revealed = false; //this might be redundant with following
@@ -17,20 +21,17 @@ public class StrangerBehavior : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if(rigidbody){
-			//rigidbody.velocity.Set(Random.Range (0,maxVelocity),Random.Range (0,maxVelocity),0);
 			rigidbody.AddForce(new Vector3(Random.Range (-maxForce,maxForce),Random.Range (-maxForce,maxForce),0));
 		}
 		player = GameObject.Find("Player");
+		strangerType = Random.Range(0,4);
 	}
 	
-	// Update is called once per frame
 	void FixedUpdate () {
 		//if not in quicktime event
 		if(following && player != null){
-			//Debug.Log("Follow playyerrrr");
 			if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
       			transform.position = Vector3.Lerp(transform.position, player.transform.position, Time.deltaTime);
-				//rigidbody.AddForce(Vector3.MoveTowards(transform.position,player.transform.position,maxVelocity));
 			}
 			else if(Vector3.Distance(player.transform.position, transform.position) > minDistance){
       			transform.position = Vector3.Lerp(transform.position, player.transform.position, Time.deltaTime*Random.Range(.2f,.6f));
@@ -41,11 +42,10 @@ public class StrangerBehavior : MonoBehaviour {
 	void OnCollisionEnter(Collision c){
         if(following)
 			return;
-		//add logic for when it is hit with sound wave here
-		//if hit with soundwave go to quicktime event thingy minigame
-		//if in quicktime event, do not move, interact differently
 		if(c.collider.tag == "ActionPulse")
         {
+			if(responseSounds[strangerType])
+				audio.PlayOneShot(responseSounds[strangerType]);
             Debug.Log("col enter");
 			HearPlayer();
 			//Destroy(c.collider.gameObject);
@@ -56,9 +56,6 @@ public class StrangerBehavior : MonoBehaviour {
 	void OnTriggerEnter(Collider c){
         if(following)
 			return;
-		//add logic for when it is hit with sound wave here
-		//if hit with soundwave go to quicktime event thingy minigame
-		//if in quicktime event, do not move, interact differently
 		if(c.tag == "ActionPulse")
         {
             Debug.Log("col enter");
@@ -73,7 +70,7 @@ public class StrangerBehavior : MonoBehaviour {
 		//just transition to following for now & show true state		
 		revealed = true;
 		following = true;
-		renderer.material.mainTexture = trueAppearance; //instant switch
+		renderer.material.mainTexture = trueAppearances[strangerType]; //instant switch
 	}
 	
 }
