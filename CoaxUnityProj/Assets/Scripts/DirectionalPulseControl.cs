@@ -16,13 +16,17 @@ public class DirectionalPulseControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        var p = GameObject.Find("Player").GetComponent<Player>();
 		if( Input.GetKeyDown(KeyCode.Space)|| Input.GetMouseButtonDown(0)){
-			//Debug.Log("PRESSED SPACE");
-			audio.PlayOneShot(actionSound);
-			
-			tempPulse = Instantiate(pulseObject,transform.position,transform.rotation) as GameObject;
-			tempPulse.rigidbody.velocity = rigidbody.velocity;
-			tempPulse.rigidbody.AddRelativeForce(new Vector3(0,AdditionalSpeed,0));
+
+            if (!p.isConversing)
+            {
+                audio.PlayOneShot(actionSound);
+
+                tempPulse = Instantiate(pulseObject, transform.position, transform.rotation) as GameObject;
+                tempPulse.rigidbody.velocity = rigidbody.velocity;
+                tempPulse.rigidbody.AddRelativeForce(new Vector3(0, AdditionalSpeed, 0));
+            }
 		}
 	}
 }

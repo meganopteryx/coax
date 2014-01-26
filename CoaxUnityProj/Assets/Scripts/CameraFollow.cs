@@ -31,7 +31,7 @@ public class CameraFollow : MonoBehaviour {
 
         if (p.isConversing)
         {
-            float distance = 15f;
+            float distance = 13f;
             Vector3 targetPosition = Vector3.Lerp(
                campos,
                (p.transform.position + p.engagedStranger.transform.position) / 2,
