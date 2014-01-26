@@ -5,7 +5,7 @@ using System.Collections;
 public class DirectionalPulseControl : MonoBehaviour {
 	
 	public GameObject pulseObject;
-	float AdditionalSpeed = 100;
+	float AdditionalSpeed = 200;
 	
 	private GameObject tempPulse;
 	
