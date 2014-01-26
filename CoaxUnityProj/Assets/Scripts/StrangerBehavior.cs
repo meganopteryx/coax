@@ -121,8 +121,10 @@ public class StrangerBehavior : MonoBehaviour {
 	public void engagePlayer()
     {
         numPulsesExpected = Random.Range(1, 5);
-        responseTimeExpected = numPulsesExpected * 1.0f;
+        responseTimeExpected = 1.0f + numPulsesExpected * 0.3f;
         numResponseTries = 0;
+
+        rigidbody.velocity = Vector3.zero;
 
 		StartCoroutine(sendPings());
 	}
