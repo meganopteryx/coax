@@ -52,48 +52,50 @@ public class OmniPulse : MonoBehaviour {
 
         while (1 != 0) //ForEvaAndaDay
         {
-            //Make A Pulse
-            pulse = Instantiate(omniPrefab) as GameObject;
-            pulse.transform.position = player.position;
-            pulse.transform.rotation = player.rotation;
-
-            //Set Initial Color
-            Color color = pulse.renderer.material.GetColor("_TintColor");
-            color.r = 0.5f; color.g = 0.5f; color.b = 0.5f; color.a = 0.5f;
-
-            //PlaySound
-            audio.PlayOneShot(sndPulse, 0.85f);
-
-            //Scale-Fade
-            for (int i = 0; i < 100; i++)
-            {
-                //Scale
-                pulse.transform.localScale = pulse.transform.localScale * pulseScale;
-                //Fade
-                color.g += 0.01f;
-                color.a -= 0.01f;
-                pulse.renderer.material.SetColor("_TintColor", color);
-
-                //Loop Through All Entities
-                GameObject[] objs = GameObject.FindGameObjectsWithTag("Entities");
-                float dist;
-                foreach (GameObject obj in objs)
-                {
-                    //CheckDist from Player
-                    dist = Vector3.Distance(player.position, obj.transform.position);
-                    float scale = i;
-                    if (dist < scale/4 && swapped.Contains(obj) == false)
-                    {
-                        swapped.Add(obj);
-                        StartCoroutine(coSwapEntity(obj));
-                    }
-
-                }
-                yield return new WaitForSeconds(pulseFadeTime);
-            }
-            Destroy(pulse, 0);
-            swapped.Clear();
-
+			if(!player.GetComponent<Player>().isConversing)
+			{
+	            //Make A Pulse
+	            pulse = Instantiate(omniPrefab) as GameObject;
+	            pulse.transform.position = player.position;
+	            pulse.transform.rotation = player.rotation;
+	
+	            //Set Initial Color
+	            Color color = pulse.renderer.material.GetColor("_TintColor");
+	            color.r = 0.5f; color.g = 0.5f; color.b = 0.5f; color.a = 0.5f;
+	
+	            //PlaySound
+	            audio.PlayOneShot(sndPulse, 0.85f);
+	
+	            //Scale-Fade
+	            for (int i = 0; i < 100; i++)
+	            {
+	                //Scale
+	                pulse.transform.localScale = pulse.transform.localScale * pulseScale;
+	                //Fade
+	                color.g += 0.01f;
+	                color.a -= 0.01f;
+	                pulse.renderer.material.SetColor("_TintColor", color);
+	
+	                //Loop Through All Entities
+	                GameObject[] objs = GameObject.FindGameObjectsWithTag("Entities");
+	                float dist;
+	                foreach (GameObject obj in objs)
+	                {
+	                    //CheckDist from Player
+	                    dist = Vector3.Distance(player.position, obj.transform.position);
+	                    float scale = i;
+	                    if (dist < scale/4 && swapped.Contains(obj) == false)
+	                    {
+	                        swapped.Add(obj);
+	                        StartCoroutine(coSwapEntity(obj));
+	                    }
+	
+	                }
+	                yield return new WaitForSeconds(pulseFadeTime);
+	            }
+	            Destroy(pulse, 0);
+	            swapped.Clear();
+			}
             yield return new WaitForSeconds(pulseFrequency);
         }
     }
@@ -127,7 +129,7 @@ public class OmniPulse : MonoBehaviour {
         clr.a = 1;
         obj.renderer.materials[i].SetColor("_TintColor", clr);
         yield return new WaitForSeconds(0.1f);
-
+		
         //Set Back to Circle
         clr.a = 0;
         obj.renderer.materials[1].SetColor("_TintColor", clr);
