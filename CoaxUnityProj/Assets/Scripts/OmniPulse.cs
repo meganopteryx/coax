@@ -94,7 +94,7 @@ public class OmniPulse : MonoBehaviour {
 
     IEnumerator coSwapEntity(GameObject obj)
     {
-        int i = Random.Range(2, 5);
+        int i = 5;//Random.Range(2, 5);
         obj.renderer.material = obj.renderer.materials[i];
         Color clr = obj.renderer.materials[0].GetColor("_TintColor");
         Color origCircleCLR = obj.renderer.materials[0].GetColor("_TintColor");
@@ -106,6 +106,7 @@ public class OmniPulse : MonoBehaviour {
         obj.renderer.materials[2].SetColor("_TintColor", clr);
         obj.renderer.materials[3].SetColor("_TintColor", clr);
         obj.renderer.materials[4].SetColor("_TintColor", clr);
+        obj.renderer.materials[5].SetColor("_TintColor", clr);
 
         //Set THE one alpha
         clr.a = 1;
@@ -118,6 +119,7 @@ public class OmniPulse : MonoBehaviour {
         obj.renderer.materials[2].SetColor("_TintColor", clr);
         obj.renderer.materials[3].SetColor("_TintColor", clr);
         obj.renderer.materials[4].SetColor("_TintColor", clr);
+        obj.renderer.materials[5].SetColor("_TintColor", clr);
         
         clr.a = 1;
         origCircleCLR.a = 1;
