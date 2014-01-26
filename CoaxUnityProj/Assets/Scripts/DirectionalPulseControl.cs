@@ -17,7 +17,7 @@ public class DirectionalPulseControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if( Input.GetKeyDown(KeyCode.Space)|| Input.GetMouseButtonDown(0)){
-			Debug.Log("PRESSED SPACE");
+			//Debug.Log("PRESSED SPACE");
 			audio.PlayOneShot(actionSound);
 			
 			tempPulse = Instantiate(pulseObject,transform.position,transform.rotation) as GameObject;

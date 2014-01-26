@@ -9,10 +9,11 @@ public class StrangerBehavior : MonoBehaviour {
 	public AudioClip[] responseSounds;
 	public Texture2D[] trueAppearances;
 	
-	private int strangerType = 0;
+	[HideInInspector]
+	public int strangerType = 0;
+	[HideInInspector]
+	public bool following = false;
 	
-	private bool following = false;
-	private bool revealed = false; //this might be redundant with following
 	private float minDistance = 1; //distance from player
 	private float maxDistance = 3;
 	
@@ -24,7 +25,7 @@ public class StrangerBehavior : MonoBehaviour {
 			rigidbody.AddForce(new Vector3(Random.Range (-maxForce,maxForce),Random.Range (-maxForce,maxForce),0));
 		}
 		player = GameObject.Find("Player");
-		strangerType = Random.Range(0,4);
+		strangerType = Random.Range(0,trueAppearances.Length);
 	}
 	
 	void FixedUpdate () {
@@ -67,8 +68,7 @@ public class StrangerBehavior : MonoBehaviour {
 	
 	//for others to call
 	public void HearPlayer(){
-		//just transition to following for now & show true state		
-		revealed = true;
+		//just transition to following for now & show true state
 		following = true;
 		renderer.material.mainTexture = trueAppearances[strangerType]; //instant switch
 
