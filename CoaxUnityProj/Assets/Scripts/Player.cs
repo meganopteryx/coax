@@ -48,6 +48,12 @@ public class Player : MonoBehaviour {
     // initiate conversation state variables and call on stranger to engage
     public void startConversingWith(GameObject stranger)
     {
+        // prevent conversations from starting while blowing up
+        if (stranger.GetComponent<StrangerBehavior>().blowingUp)
+        {
+            return;
+        }
+
         //gameObject.GetComponent<OmniPulse>().stopPulse();
 
         canSpeak = false;
