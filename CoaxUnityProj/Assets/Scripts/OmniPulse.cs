@@ -104,12 +104,13 @@ public class OmniPulse : MonoBehaviour {
         int i = 5;//Random.Range(2, 5); //always triangle
 		
 		int k = Random.Range(1,4);
+        float vol = 0.12f;
 		if(k == 1)
-        	audio.PlayOneShot(squarePulse, 0.25f);
+        	audio.PlayOneShot(squarePulse, vol);
 		else if (k == 2)
-        	audio.PlayOneShot(pentPulse, 0.25f);
+        	audio.PlayOneShot(pentPulse, vol);
 		else if (k == 3)
-        	audio.PlayOneShot(hexPulse, 0.25f);
+        	audio.PlayOneShot(hexPulse, vol);
         obj.renderer.material = obj.renderer.materials[i];
         Color clr = obj.renderer.materials[0].GetColor("_TintColor");
         Color origCircleCLR = obj.renderer.materials[0].GetColor("_TintColor");
