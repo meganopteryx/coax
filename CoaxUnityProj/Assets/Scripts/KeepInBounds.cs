@@ -48,10 +48,10 @@ public class KeepInBounds : MonoBehaviour {
         else
         {
             Debug.Log("No bounds, use camera bounds");
-            minX = -Camera.main.orthographicSize;
-            minY = -Camera.main.orthographicSize;
-            maxX = Camera.main.orthographicSize;
-            maxY = Camera.main.orthographicSize;
+            //minX = -Camera.main.orthographicSize;
+            //minY = -Camera.main.orthographicSize;
+            //maxX = Camera.main.orthographicSize;
+            //maxY = Camera.main.orthographicSize;
         }	
     }
 }
