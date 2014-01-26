@@ -51,11 +51,31 @@ public class OmniPulse : MonoBehaviour {
                 color.g += 0.01f;
                 color.a -= 0.01f;
                 pulse.renderer.material.SetColor("_TintColor", color);
+
+                //Loop Through All Entities
+                GameObject[] objs = GameObject.FindGameObjectsWithTag("Entities");
+                float dist;
+                foreach (GameObject obj in objs)
+                {
+                    //CheckDist from Player
+                    dist = Vector3.Distance(player.position, obj.transform.position);
+                    if (dist < i * 10)
+                    {
+                        StartCoroutine(coSwapEntity(obj));
+                    }
+
+                }
                 yield return new WaitForSeconds(pulseFadeTime);
             }
             Destroy(pulse, 0);
 
             yield return new WaitForSeconds(pulseFrequency);
         }
+    }
+
+    IEnumerator coSwapEntity(GameObject obj)
+    {
+        //obj.renderer.material.mainTexture = obj.renderer.material.GetTexture("TrueImage");
+        yield return new WaitForSeconds(0.0f);
     }
 }
