@@ -35,7 +35,8 @@ public class StrangerBehavior : MonoBehaviour {
 	
 	void FixedUpdate () {
 		//if not in quicktime event
-		if(following && player != null && !player.GetComponent<Player>().isConversing){
+		if(following && player != null && !player.GetComponent<Player>().isConversing)
+        {
 			if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
       			transform.position = Vector3.Lerp(transform.position, player.transform.position, Time.deltaTime);
 			}
@@ -75,10 +76,16 @@ public class StrangerBehavior : MonoBehaviour {
 	{
 		// TODO: play random sound from bank
 		
-        tempPulse = Instantiate(speakPulseObject, transform.position, transform.rotation) as GameObject;
+        Transform t  = Instantiate(player.transform) as Transform;
+        t.Rotate(new Vector3(0,0,180));
+
+        tempPulse = Instantiate(speakPulseObject, transform.position, t.rotation) as GameObject;
+        
         tempPulse.rigidbody.velocity = rigidbody.velocity;
         tempPulse.rigidbody.AddRelativeForce(new Vector3(0, AdditionalSpeed, 0));
-		
+
+        Destroy(t.gameObject);
+
 		StartCoroutine(waitForPlayer());
 	}
 	
