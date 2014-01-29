@@ -12,6 +12,7 @@ others. Coax them into showing their true form.
 
 - [PLAY HERE](https://dl.dropboxusercontent.com/u/2334881/CoaxWeb/WebPlayer.html)
 - [Watch Video](http://www.youtube.com/watch?v=frcOn1aVcYs)
+- [Global Game Jam Page](http://globalgamejam.org/2014/games/coax)
 
 ## Instructions: 
 
