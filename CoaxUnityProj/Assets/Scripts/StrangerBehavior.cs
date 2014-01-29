@@ -227,6 +227,6 @@ public class StrangerBehavior : MonoBehaviour {
             transform.localScale = transform.localScale * 1.5f;
             yield return new WaitForSeconds(0.05f);
         }
-        Destroy(gameObject, 0.2f);
+        Destroy(gameObject, 2.2f);
     }
 }
