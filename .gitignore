@@ -10,3 +10,6 @@
 *.suo
 
 *.swp
+
+# Mac stuff
+.DS_Store
