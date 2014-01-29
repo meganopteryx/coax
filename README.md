@@ -1,9 +1,11 @@
 Coax
 ====
 
+![logo](readme_img/logo.png)
+
 Built in 48 hours for the [Global Game Jam 2014 at Houston](http://globalgamejam.org/2014/games/coax).
 
-![screen](screen.png)
+![screen](readme_img/screen.png)
 
 Coax is an audio-visual experience. Navigate the space and interact with
 others. Coax them into showing their true form. 
@@ -25,3 +27,7 @@ others. Coax them into showing their true form.
 - __Julio Lopez (Art)__ - characters, sound wave arcs, etc.
 - __Aaron Hollingsworth (Programming)__ - player/cam movement, omni-pulse, bomb, parallax, glow, etc.
 - __Shaun Williams (Direction/Programming)__ - conversation events, etc.
+
+![shapes](readme_img/shapes.png)
+
+![credits](readme_img/credits.png)
