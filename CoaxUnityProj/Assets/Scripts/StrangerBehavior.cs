@@ -45,10 +45,15 @@ public class StrangerBehavior : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
+        //Keep Moving
+        if (!player.GetComponent<Player>().isConversing)
+            rigidbody.velocity = rigidbody.velocity * 1.01f;
+
+
 		//if not in quicktime event
 		if(following && player != null && !player.GetComponent<Player>().isConversing)
         {
-			if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
+            if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
       			transform.position = Vector3.Lerp(transform.position, player.transform.position, Time.deltaTime);
 			}
 			else if(Vector3.Distance(player.transform.position, transform.position) > minDistance){
@@ -78,7 +83,7 @@ public class StrangerBehavior : MonoBehaviour {
         if (c.tag == "ActionPulse")
         {
             //Bomb or Response
-            int bomb = Random.Range(0, 3);
+            int bomb = Random.Range(0, 10);
             if (bomb == 1)
             {
                 //Kill actionPulse
@@ -92,7 +97,7 @@ public class StrangerBehavior : MonoBehaviour {
             }
             else
             {
-                Debug.Log("col enter");
+                //Debug.Log("col enter");
                 HearPlayer();
                 //Destroy(c.collider.gameObject);
                 c.GetComponent<Collider>().enabled = false;
@@ -157,6 +162,10 @@ public class StrangerBehavior : MonoBehaviour {
         {
             // failure
             player.GetComponent<Player>().stopConversing();
+
+            //Boom
+            blowingUp = true;
+            StartCoroutine(coBomb());
         }
         else
         {
@@ -227,6 +236,9 @@ public class StrangerBehavior : MonoBehaviour {
             transform.localScale = transform.localScale * 1.5f;
             yield return new WaitForSeconds(0.05f);
         }
+        clr.a = 0;
+        renderer.material.SetColor("_TintColor", clr);
+        transform.renderer.enabled = false;
         Destroy(gameObject, 2.2f);
     }
 }

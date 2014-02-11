@@ -4,12 +4,11 @@ using System.Collections;
 public class Player : MonoBehaviour {
 
 	// Use this for initialization
-    public enum ControlScheme {MOUSE_WSDF, CONTROLLER};
-    public ControlScheme controlScheme = ControlScheme.MOUSE_WSDF;
+    public enum ControlScheme {CS_MOUSE_WSDF, CS_CONTROLLER, CS_KEYBOARD};
+    public ControlScheme controlScheme = ControlScheme.CS_MOUSE_WSDF;
     public float maxTurnSpeed = 10;
-    public float maxSpeed = 100;
     public float thrust = 15;
-
+    
     public AudioClip[] responseSounds;
 	
 	public GameObject speakPulseObject;
@@ -160,30 +159,38 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        //Mouse-WSDF Controll Scheme
-        switch (controlScheme)
-        {
-            case ControlScheme.CONTROLLER:
-                break;
-            default: //Mouse-WSDF default
-                if (!isConversing) {
-                    FollowMouse();
-                    WSDF();
-                }
-
-                break;
-        }
-
         if (isConversing)
         {
             pointPlayerAtEngagedStranger();
             updateConvoDistance();
-            if (canSpeak && (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)))
+            if (canSpeak && Input.GetButtonDown("Fire1")) //Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) ||
             {
+                Debug.Log("speak");
                 speak();
             }
         }
 	}
+
+    void FixedUpdate()
+    {
+
+        //Movement only if not in conversation
+        if (!isConversing)
+        {
+            //Move Player based on Controll Scheme
+            switch (controlScheme)
+            {
+                case ControlScheme.CS_CONTROLLER:
+                case ControlScheme.CS_KEYBOARD: 
+                    ThrustMove();
+                    break;
+                default: //Mouse-WSDF default
+                    FollowMouse();
+                    ThrustMove();
+                    break;
+            }
+        }
+    }
 
     void FollowMouse()
     {
@@ -200,15 +207,32 @@ public class Player : MonoBehaviour {
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(new Vector3(0,0,angle-90)), Time.deltaTime * (maxTurnSpeed/2));
     }
 
-    void WSDF()
+    void ThrustMove()
     {
         //X-Axis
-        rigidbody.AddForce(Input.GetAxis("Horizontal") * thrust, 0, 0);
-        //Y-Axis
-        rigidbody.AddForce(0, Input.GetAxis("Vertical") * thrust, 0);
+        //rigidbody.AddForce(Input.GetAxis("Horizontal") * thrust, 0, 0);
+        switch (controlScheme)
+        {
+            case ControlScheme.CS_CONTROLLER: //turn and strafe
+                float strafeThrust = 0;
+                if (Input.GetButton("button5"))
+                    strafeThrust = -thrust;
+                if (Input.GetButton("button6"))
+                    strafeThrust = thrust;
 
-        //Speed Limit
-        if (rigidbody.velocity.magnitude > 0)
-            rigidbody.velocity = rigidbody.velocity / rigidbody.velocity.magnitude * Mathf.Min(rigidbody.velocity.magnitude, maxSpeed);
+                rigidbody.AddRelativeForce(new Vector3(strafeThrust, 0, 0));
+                rigidbody.AddRelativeTorque(new Vector3(0, 0, -Input.GetAxis("Horizontal") * maxTurnSpeed * 3));
+                break;
+            case ControlScheme.CS_KEYBOARD: //turn only
+                rigidbody.AddRelativeTorque(new Vector3(0, 0, -Input.GetAxis("Horizontal") * maxTurnSpeed * 3));
+                break;
+            case ControlScheme.CS_MOUSE_WSDF: //strafe only
+                rigidbody.AddRelativeForce(new Vector3(Input.GetAxis("Horizontal") * thrust, 0, 0));
+                break;
+        }
+
+        //Y-Axis (all input types)
+        rigidbody.AddRelativeForce(0, Input.GetAxis("Vertical") * thrust, 0);
+
     }
 }
