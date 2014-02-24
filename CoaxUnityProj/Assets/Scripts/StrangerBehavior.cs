@@ -15,6 +15,7 @@ public class StrangerBehavior : MonoBehaviour {
 	public int strangerType = 0;
 	[HideInInspector]
 	public bool following = false;
+	public bool revealed = false;
 	
 	private float minDistance = 1; //distance from player
 	private float maxDistance = 3;
@@ -37,11 +38,17 @@ public class StrangerBehavior : MonoBehaviour {
     {
         sndBombBlip = Resources.Load("bombBlip") as AudioClip;
         sndBomb = Resources.Load("bomb") as AudioClip;
-		if(rigidbody){
-			rigidbody.AddForce(new Vector3(Random.Range (-maxForce,maxForce),Random.Range (-maxForce,maxForce),0));
-		}
 		player = GameObject.Find("Player");
 		strangerType = Random.Range(0,trueAppearances.Length);
+		addRandomForce();
+	}
+
+	public void addRandomForce()
+	{
+		if(rigidbody)
+		{
+			rigidbody.AddForce(new Vector3(Random.Range (-maxForce,maxForce),Random.Range (-maxForce,maxForce),0));
+		}
 	}
 	
 	void FixedUpdate () {
@@ -55,6 +62,8 @@ public class StrangerBehavior : MonoBehaviour {
 		*/
 
 		//if not in quicktime event
+		/*
+		(I commented this out because we decided to remove the following logic from the strangers)
 		if(following && player != null && !player.GetComponent<Player>().isConversing)
         {
             if(Vector3.Distance(player.transform.position, transform.position) > maxDistance){
@@ -64,10 +73,11 @@ public class StrangerBehavior : MonoBehaviour {
       			transform.position = Vector3.Lerp(transform.position, player.transform.position, Time.deltaTime*Random.Range(.2f,.6f));
 			}
 		}
+		*/
 	}
 	
 	void OnCollisionEnter(Collision c){
-        if(following)
+        if(revealed)
 			return;
 		if(c.collider.tag == "ActionPulse")
         {
@@ -82,7 +92,7 @@ public class StrangerBehavior : MonoBehaviour {
 
     void OnTriggerEnter(Collider c)
     {
-        if (following)
+        if (revealed)
             return;
         if (c.tag == "ActionPulse")
         {
@@ -150,8 +160,8 @@ public class StrangerBehavior : MonoBehaviour {
     IEnumerator win()
     {
         yield return new WaitForSeconds(1f);
-        follow();
         reveal();
+		addRandomForce();
         player.GetComponent<Player>().stopConversing();
     }
 
@@ -180,6 +190,7 @@ public class StrangerBehavior : MonoBehaviour {
 	
 	public void reveal()
 	{
+		revealed = true;
 		renderer.material.mainTexture = trueAppearances[strangerType]; //instant switch
 	}
 	
