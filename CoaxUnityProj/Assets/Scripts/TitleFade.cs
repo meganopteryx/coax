@@ -3,63 +3,65 @@ using System.Collections;
 
 public class TitleFade : MonoBehaviour {
 
-	// Use this for initialization
-    private float time;
-    public const float durationWait = 2.0f;
-    public const float durationFadeIn = 2.0f;
-    public const float durationSustain = 2.0f;
-    public const float durationFadeOut = 2.0f;
-    public float timeWait, timeFadeIn, timeSustain, timeFadeOut;
-
     void setAlpha(float alpha)
     {
         Color oldColor = renderer.material.GetColor("_TintColor");
         Color newColor = new Color(oldColor.r, oldColor.g, oldColor.b, alpha);
         renderer.material.SetColor("_TintColor", newColor);
-    }
-
-    void initTimes()
-    {
-        time = 0;
-        timeWait = durationWait;
-        timeFadeIn = timeWait + durationFadeIn;
-        timeSustain = timeFadeIn + durationSustain;
-        timeFadeOut = timeSustain + durationFadeOut;
-    }
-
-	void Start () 
-    {
-        setAlpha(0.0f);
-        initTimes();
 	}
+
+	// Coroutine for fading from one alpha to another over a given time
+	IEnumerator fade(float startAlpha, float endAlpha, float totalTime)
+	{
+		float time = 0;
+		float alpha;
+		float deltaAlpha = endAlpha - startAlpha;
+		float minAlpha = startAlpha;
+		float maxAlpha = endAlpha;
+		if (startAlpha > endAlpha) {
+			minAlpha = endAlpha;
+			maxAlpha = startAlpha;
+		}
+		while (true) {
+			alpha = startAlpha + deltaAlpha*time/totalTime;
+			alpha = Mathf.Clamp (alpha, minAlpha, maxAlpha);
+			setAlpha(alpha);
+			if (alpha == endAlpha) {
+				break;
+			}
+			else {
+				yield return null;
+			}
+			time += Time.deltaTime;
+		}
+	}
+	
+	// Wrapper coroutines for fading in and out
+	IEnumerator fadeIn(float totalTime)
+	{
+		yield return StartCoroutine(fade(0,1,totalTime));
+	}
+	IEnumerator fadeOut(float totalTime)
+	{
+		yield return StartCoroutine(fade(1,0,totalTime));
+	}
+
+	void Start ()
+    {
+		StartCoroutine (script ());
+	}
+
+	IEnumerator script() {
+		setAlpha(0);
+		yield return new WaitForSeconds(1);
+		yield return StartCoroutine (fadeIn (1));
+		yield return new WaitForSeconds(2);
+		yield return StartCoroutine (fadeOut (1));
+		Destroy(gameObject);
+	}
+
 	
 	// Update is called once per frame
 	void Update () {
-
-        time += Time.deltaTime;
-        float t;
-
-        if (time < timeWait)
-        {
-            setAlpha(0);
-        }
-        else if (time < timeFadeIn)
-        {
-            t = time - timeWait;
-            setAlpha(t / durationFadeIn);
-        }
-        else if (time < timeSustain)
-        {
-            setAlpha(1);
-        }
-        else if (time < timeFadeOut)
-        {
-            t = time-timeSustain;
-            setAlpha(1 - t / durationFadeOut);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
 	}
 }
