@@ -46,9 +46,13 @@ public class StrangerBehavior : MonoBehaviour {
 	
 	void FixedUpdate () {
         //Keep Moving
+        /*
+		(Hey guys, I commented this out because the strangers stopped moving after some time.
+		I guessed that this code was trying to fix this problem, but I just zeroed out the Drag
+		property from the Stranger's rigid body in the editor.)
         if (!player.GetComponent<Player>().isConversing)
             rigidbody.velocity = rigidbody.velocity * 1.01f;
-
+		*/
 
 		//if not in quicktime event
 		if(following && player != null && !player.GetComponent<Player>().isConversing)
