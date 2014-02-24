@@ -53,6 +53,10 @@ public class Player : MonoBehaviour {
             return;
         }
 
+		if (isConversing) {
+			return;
+		}
+
         //gameObject.GetComponent<OmniPulse>().stopPulse();
 
         canSpeak = false;
