@@ -9,15 +9,17 @@ public class DirectionalPulseControl : MonoBehaviour {
 	float AdditionalSpeed = 200;
 	
 	private GameObject tempPulse;
+	public HelpMessenger helpMessenger;
 	
 	// Use this for initialization
 	void Start () {	
+		helpMessenger = GameObject.Find ("LevelController").GetComponent<HelpMessenger>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
         var p = GameObject.Find("Player").GetComponent<Player>();
-		if( Input.GetButtonDown("Fire1"))
+		if(Input.GetButtonDown("Fire1") && !helpMessenger.lockShoot)
         {
 
             if (!p.isConversing)

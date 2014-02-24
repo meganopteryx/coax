@@ -12,6 +12,7 @@ public class Player : MonoBehaviour {
     public AudioClip[] responseSounds;
 	
 	public GameObject speakPulseObject;
+	public HelpMessenger helpMessenger;
 
     public float stageDist = 2f;
 	
@@ -150,6 +151,7 @@ public class Player : MonoBehaviour {
 
     void Start () 
     {
+		helpMessenger = GameObject.Find ("LevelController").GetComponent<HelpMessenger>();
 	}
 
     void pointPlayerAtEngagedStranger()
@@ -197,7 +199,11 @@ public class Player : MonoBehaviour {
     }
 
     void FollowMouse()
-    {
+	{
+		if (helpMessenger.lockLook) {
+			return;
+		}
+
         //get mouse and object screen pos
         Vector3 mouse_pos = Input.mousePosition;
         Vector3 object_pos = Camera.main.WorldToScreenPoint(transform.position);
@@ -213,6 +219,10 @@ public class Player : MonoBehaviour {
 
     void ThrustMove()
     {
+		if (helpMessenger.lockMove) {
+			return;
+		}
+
         //X-Axis
         //rigidbody.AddForce(Input.GetAxis("Horizontal") * thrust, 0, 0);
         switch (controlScheme)
