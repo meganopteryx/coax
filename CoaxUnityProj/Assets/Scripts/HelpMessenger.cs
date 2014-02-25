@@ -12,12 +12,17 @@ public class HelpMessenger : MonoBehaviour {
 
 	GameObject blackoutObject, instructionObject;
 
+	bool taughtConversation = false;
+
 	public Texture2D[] instructionTextures;
 
+	// This function sets the state of a message transition
+	// with (0 <= k <= 1)
+	// start = 0, end = 1
 	void setTransition(float k)
 	{
 		setBlackoutAlpha(Mathf.Clamp (k,0,0.25f));
-		setInstructionAlpha(k);
+		//setInstructionAlpha(k);
 		setInstructionScale(Mathf.Clamp(k*4, 0, 1));
 	}
 
@@ -56,6 +61,8 @@ public class HelpMessenger : MonoBehaviour {
 		// set positions (relative to camera)
 		blackoutObject.transform.localPosition = new Vector3(0, 0, 1.01f);
 		instructionObject.transform.localPosition = new Vector3(0,0,1);
+		blackoutObject.transform.localRotation = Quaternion.identity;
+		instructionObject.transform.localRotation = Quaternion.identity;
 
 		// initialize transition state
 		setTransition(0);
@@ -72,7 +79,7 @@ public class HelpMessenger : MonoBehaviour {
 		StartCoroutine(script());
 	}
 
-	// Coroutine for fad
+	// Coroutine for transitioning
 	IEnumerator transition(float startK, float endK, float totalTime)
 	{
 		float time = 0;
@@ -98,7 +105,7 @@ public class HelpMessenger : MonoBehaviour {
 		}
 	}
 
-	// Wrapper coroutines for fading in and out
+	// Wrapper coroutines for transitioning in and out of a message
 	IEnumerator transitionIn(float totalTime)
 	{
 		yield return StartCoroutine(transition(0,1,totalTime));
@@ -106,6 +113,19 @@ public class HelpMessenger : MonoBehaviour {
 	IEnumerator transitionOut(float totalTime)
 	{
 		yield return StartCoroutine(transition(1,0,totalTime));
+	}
+
+	public IEnumerator teachConversation()
+	{
+		if (!taughtConversation) {
+			createObjects();
+			setInstructionTexture(5);
+			yield return StartCoroutine(transitionIn(1f));
+			yield return new WaitForSeconds(5.0f);
+			yield return StartCoroutine(transitionOut(1f));
+			destroyObjects();
+		}
+		taughtConversation = true;
 	}
 
 	IEnumerator script()
@@ -124,8 +144,30 @@ public class HelpMessenger : MonoBehaviour {
 		yield return StartCoroutine(transitionOut(1f));
 		destroyObjects();
 
-		// unlock controls for now
-		lockLook = lockMove = lockShoot = false;
+		yield return new WaitForSeconds(3.0f);
+
+		// show move instructions
+		lockMove = false;
+		createObjects();
+		setInstructionTexture(1);
+		yield return StartCoroutine(transitionIn(1f));
+		for (int i=0; i<3; i++) {
+			setInstructionTexture(1 + i);
+			yield return new WaitForSeconds(1);
+		}
+		yield return StartCoroutine(transitionOut(1f));
+		destroyObjects();
+
+		yield return new WaitForSeconds(6.0f);
+
+		// show look/shoot instructions
+		createObjects();
+		setInstructionTexture(4);
+		yield return StartCoroutine(transitionIn(1f));
+		yield return new WaitForSeconds(3.0f);
+		yield return StartCoroutine(transitionOut(1f));
+		destroyObjects();
+		lockLook = lockShoot = false;
 	}
 	
 	// Update is called once per frame

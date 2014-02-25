@@ -33,9 +33,13 @@ public class StrangerBehavior : MonoBehaviour {
     int numResponseTriesAllowed = 1;
     int numResponseTries;
 	
+	public HelpMessenger helpMessenger;
+	
 	// Use this for initialization
     void Start()
-    {
+	{
+		helpMessenger = GameObject.Find ("LevelController").GetComponent<HelpMessenger>();
+
         sndBombBlip = Resources.Load("bombBlip") as AudioClip;
         sndBomb = Resources.Load("bomb") as AudioClip;
 		player = GameObject.Find("Player");
@@ -149,6 +153,8 @@ public class StrangerBehavior : MonoBehaviour {
 	}
 	IEnumerator sendPings()
 	{
+		yield return StartCoroutine(helpMessenger.teachConversation());
+
         for (int i = 0; i < numPulsesExpected; i++)
         {
             speak();
