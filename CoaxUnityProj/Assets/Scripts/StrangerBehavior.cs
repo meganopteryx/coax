@@ -15,6 +15,7 @@ public class StrangerBehavior : MonoBehaviour {
 	public int strangerType = 0;
 	[HideInInspector]
 	public bool following = false;
+	public bool transforming = false;
 	public bool revealed = false;
 	
 	private float minDistance = 1; //distance from player
@@ -147,6 +148,7 @@ public class StrangerBehavior : MonoBehaviour {
         responseTimeExpected = 1.0f + numPulsesExpected * 0.3f;
         numResponseTries = 0;
 
+		rigidbody.angularVelocity = Vector3.zero;
         rigidbody.velocity = Vector3.zero;
 
 		StartCoroutine(sendPings());
@@ -165,8 +167,17 @@ public class StrangerBehavior : MonoBehaviour {
 
     IEnumerator win()
     {
+		transforming = true;
+
+		rigidbody.angularDrag = 0;
+		rigidbody.AddTorque(new Vector3(0,0,300));
         yield return new WaitForSeconds(1f);
-        reveal();
+
+		reveal();
+		rigidbody.angularVelocity = Vector3.zero;
+		transform.localRotation = Quaternion.identity;
+		yield return new WaitForSeconds(1f);
+
 		addRandomForce();
         player.GetComponent<Player>().stopConversing();
     }

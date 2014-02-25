@@ -77,6 +77,7 @@ public class HelpMessenger : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		StartCoroutine(script());
+		//lockLook = lockMove = lockShoot = false;
 	}
 
 	// Coroutine for transitioning

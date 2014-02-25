@@ -31,20 +31,33 @@ public class CameraFollow : MonoBehaviour {
 
         if (p.isConversing)
         {
-            float distance = 13f;
-            Vector3 targetPosition = Vector3.Lerp(
-               campos,
-               (p.transform.position + p.engagedStranger.transform.position) / 2,
-               Time.deltaTime * camMoveLerp);
-            targetPosition.z = Mathf.Lerp(campos.z, -distance, Time.deltaTime * camZoomLerp);
-            camera.transform.position = Vector3.Lerp(campos, targetPosition, Time.deltaTime * camZoomLerp);
+			if (p.engagedStranger.GetComponent<StrangerBehavior>().transforming) {
+				float distance = 11f;
+				Vector3 targetPosition = Vector3.Lerp(
+					campos,
+					p.engagedStranger.transform.position,
+					Time.deltaTime * camMoveLerp);
+				targetPosition.z = Mathf.Lerp(campos.z, -distance, Time.deltaTime * camZoomLerp);
+				camera.transform.position = Vector3.Lerp(campos, targetPosition, Time.deltaTime * camZoomLerp);
 
-            targetAngle = Mathf.Atan2(
-                p.engagedStranger.transform.position.y - p.transform.position.y,
-                p.engagedStranger.transform.position.x - p.transform.position.x);
-        }
-        else
-        {
+				targetAngle = 0;
+			}
+			else {
+				float distance = 13f;
+				Vector3 targetPosition = Vector3.Lerp(
+					campos,
+					(p.transform.position + p.engagedStranger.transform.position) / 2,
+					Time.deltaTime * camMoveLerp);
+				targetPosition.z = Mathf.Lerp(campos.z, -distance, Time.deltaTime * camZoomLerp);
+				camera.transform.position = Vector3.Lerp(campos, targetPosition, Time.deltaTime * camZoomLerp);
+				
+				targetAngle = Mathf.Atan2(
+					p.engagedStranger.transform.position.y - p.transform.position.y,
+					p.engagedStranger.transform.position.x - p.transform.position.x);
+			}
+		}
+		else
+		{
             //Set Distance
             float distance = (player.rigidbody.velocity.magnitude * camMaxDist) + 15;
 
