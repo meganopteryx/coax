@@ -10,7 +10,7 @@ public class HelpMessenger : MonoBehaviour {
 	public bool lockMove;
 	public bool lockShoot;
 
-	public bool skipTutorial = true;
+	bool skipTutorial = false;
 
 	GameObject blackoutObject, instructionObject;
 
