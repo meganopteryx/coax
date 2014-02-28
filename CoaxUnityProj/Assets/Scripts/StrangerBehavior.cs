@@ -92,11 +92,20 @@ public class StrangerBehavior : MonoBehaviour {
 		}
 	}
 
+	void makeSpin()
+	{
+		rigidbody.angularDrag = 0;
+		rigidbody.AddTorque(new Vector3(0,0,300));
+	}
+
 	public void addRandomForce()
 	{
 		if(rigidbody)
 		{
-			rigidbody.AddForce(new Vector3(Random.Range (-maxForce,maxForce),Random.Range (-maxForce,maxForce),0));
+			Vector3 dir = new Vector3(Random.Range (-maxForce,maxForce),Random.Range (-maxForce,maxForce),0);
+			float angle = Mathf.Atan2(dir.y, dir.x);
+			rigidbody.AddForce(dir);
+			transform.rotation = Quaternion.Euler(new Vector3(0,0,angle*Mathf.Rad2Deg));
 		}
 	}
 	
@@ -154,9 +163,11 @@ public class StrangerBehavior : MonoBehaviour {
                 foreach (GameObject obj in objs)
                     Destroy(obj);
 
-                blowingUp = true;
-                player.GetComponent<Player>().stopConversing();
-                StartCoroutine(coBomb());
+				aboutToBlow = true;
+				makeSpin ();
+				musicConductor.AddMusicCallback(delegate() {
+					StartCoroutine(coBomb());
+				});
             }
             else
             {
@@ -195,16 +206,23 @@ public class StrangerBehavior : MonoBehaviour {
 		rigidbody.angularVelocity = Vector3.zero;
         rigidbody.velocity = Vector3.zero;
 
+		StartCoroutine (tryTeachingBeforeSendingPings());
+	}
+
+	IEnumerator tryTeachingBeforeSendingPings() {
+
+		// This will return immediately if we've already taught the player
+		yield return StartCoroutine(helpMessenger.teachConversation());
+
 		// Start sending pings at the next musical measure
 		// (so they're singing to the rhythm)
 		musicConductor.AddMusicCallback(delegate() {
 			StartCoroutine(sendPings());
 		});
 	}
+
 	IEnumerator sendPings()
 	{
-		yield return StartCoroutine(helpMessenger.teachConversation());
-
         for (int i = 0; i < numPulsesExpected; i++)
         {
             speak();
@@ -217,17 +235,12 @@ public class StrangerBehavior : MonoBehaviour {
     {
 		transforming = true;
 
-		rigidbody.angularDrag = 0;
-		rigidbody.AddTorque(new Vector3(0,0,300));
-        yield return new WaitForSeconds(1f);
+		makeSpin();
+		yield return new WaitForSeconds(0.2f);
 
-		reveal();
-		rigidbody.angularVelocity = Vector3.zero;
-		transform.localRotation = Quaternion.identity;
-		yield return new WaitForSeconds(1f);
-
-		addRandomForce();
-        player.GetComponent<Player>().stopConversing();
+		musicConductor.AddMusicCallback(delegate() {
+			StartCoroutine(reveal());
+		});
     }
 
     public void responseFromPlayer(int numPulses)
@@ -238,13 +251,12 @@ public class StrangerBehavior : MonoBehaviour {
             StartCoroutine(win());
         }
         else if (numResponseTries == numResponseTriesAllowed)
-        {
-            // failure
-            player.GetComponent<Player>().stopConversing();
-
-            //Boom
-            blowingUp = true;
-            StartCoroutine(coBomb());
+		{
+			aboutToBlow = true;
+			makeSpin ();
+			musicConductor.AddMusicCallback(delegate() {
+				StartCoroutine(coBomb());
+			});
         }
         else
         {
@@ -253,12 +265,31 @@ public class StrangerBehavior : MonoBehaviour {
         }
     }
 	
-	public void reveal()
+	IEnumerator reveal()
 	{
 		revealed = true;
-		renderer.material.mainTexture = trueAppearances[strangerType]; //instant switch
+
+		// show true texture
+		renderer.material.mainTexture = trueAppearances[strangerType];
+
+		// unmute the shape's track
 		musicConductor.unmuteTrack(strangerType+1);
+
+		// play pulse sound
 		PlayPulse(strangerType, 1.0f);
+
+		// freeze spin and make upright
+		rigidbody.angularVelocity = Vector3.zero;
+		transform.localRotation = Quaternion.identity;
+
+		// pause
+		yield return new WaitForSeconds(1f);
+
+		// go in random direction
+		addRandomForce();
+
+		// stop conversation
+		player.GetComponent<Player>().stopConversing();
 	}
 	
 	public void follow()
@@ -277,6 +308,7 @@ public class StrangerBehavior : MonoBehaviour {
     AudioClip sndBombBlip;
     AudioClip sndBomb;
     public bool blowingUp = false;
+	public bool aboutToBlow = false;
     IEnumerator coBomb()
     {
         //Blink Color 3 times
@@ -284,22 +316,23 @@ public class StrangerBehavior : MonoBehaviour {
         clr.r = 1;
         renderer.material.SetColor("_TintColor", clr);
         audio.PlayOneShot(sndBombBlip);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.25f);
         clr.r = 0;
         renderer.material.SetColor("_TintColor", clr);
         audio.PlayOneShot(sndBombBlip);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.25f);
         clr.r = 1;
         renderer.material.SetColor("_TintColor", clr);
         audio.PlayOneShot(sndBombBlip);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.25f);
         clr.r = 0;
         renderer.material.SetColor("_TintColor", clr);
         audio.PlayOneShot(sndBombBlip);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.25f);
         clr.r = 1;
         renderer.material.SetColor("_TintColor", clr);
         audio.PlayOneShot(sndBomb);
+		blowingUp = true;
 
 
         //Blow Up
@@ -321,6 +354,11 @@ public class StrangerBehavior : MonoBehaviour {
         clr.a = 0;
         renderer.material.SetColor("_TintColor", clr);
         transform.renderer.enabled = false;
+		
+		// stop the conversation
+		player.GetComponent<Player>().stopConversing();
+
         Destroy(gameObject, 2.2f);
+
     }
 }

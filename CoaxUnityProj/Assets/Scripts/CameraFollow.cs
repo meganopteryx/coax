@@ -32,8 +32,9 @@ public class CameraFollow : MonoBehaviour {
         if (p.isConversing)
 		{
 			StrangerBehavior stranger = p.engagedStranger.GetComponent<StrangerBehavior>();
-			if (stranger.transforming) {
-				float distance = stranger.revealed ? 13f : 11f;
+			if (stranger.transforming || stranger.aboutToBlow) {
+				// ZOOM IN ON STRANGER TRANFORMING
+				float distance = (stranger.revealed || stranger.blowingUp) ? 13f : 11f;
 				Vector3 targetPosition = Vector3.Lerp(
 					campos,
 					p.engagedStranger.transform.position,
@@ -44,6 +45,7 @@ public class CameraFollow : MonoBehaviour {
 				targetAngle = 0;
 			}
 			else {
+				// SETUP CONVERSATION SHOT
 				float distance = 13f;
 				Vector3 targetPosition = Vector3.Lerp(
 					campos,

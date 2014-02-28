@@ -10,6 +10,8 @@ public class HelpMessenger : MonoBehaviour {
 	public bool lockMove;
 	public bool lockShoot;
 
+	public bool skipTutorial = true;
+
 	GameObject blackoutObject, instructionObject;
 
 	bool taughtConversation = false;
@@ -76,8 +78,12 @@ public class HelpMessenger : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		StartCoroutine(script());
-		//lockLook = lockMove = lockShoot = false;
+		if (skipTutorial) {
+			lockLook = lockMove = lockShoot = false;
+		}
+		else {
+			StartCoroutine(script());
+		}
 	}
 
 	// Coroutine for transitioning

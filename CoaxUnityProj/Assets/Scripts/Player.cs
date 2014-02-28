@@ -49,7 +49,7 @@ public class Player : MonoBehaviour {
     public void startConversingWith(GameObject stranger)
     {
         // prevent conversations from starting while blowing up
-        if (stranger.GetComponent<StrangerBehavior>().blowingUp)
+        if (stranger.GetComponent<StrangerBehavior>().aboutToBlow)
         {
             return;
         }
