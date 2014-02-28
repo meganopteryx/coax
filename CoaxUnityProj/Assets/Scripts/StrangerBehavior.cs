@@ -35,6 +35,9 @@ public class StrangerBehavior : MonoBehaviour {
     int numResponseTries;
 	
 	public HelpMessenger helpMessenger;
+
+	Color origTriangleColor;
+	Color origCircleColor;
 	
 	// Use this for initialization
     void Start()
@@ -46,6 +49,38 @@ public class StrangerBehavior : MonoBehaviour {
 		player = GameObject.Find("Player");
 		strangerType = Random.Range(0,trueAppearances.Length);
 		addRandomForce();
+
+		origTriangleColor = renderer.materials[5].GetColor("_TintColor");
+		origCircleColor = renderer.materials[0].GetColor ("_TintColor");
+
+		SetTriangleAlpha (0);
+	}
+
+	public void SetTriangleAlpha(float alpha) {
+		
+		
+		int i = 5;//Random.Range(2, 5); //always triangle
+
+		Color clr = origTriangleColor;
+		
+		//SetAllTranslucent
+		clr.a = 0;
+		renderer.materials[0].SetColor("_TintColor", clr);
+		renderer.materials[1].SetColor("_TintColor", clr);
+		renderer.materials[2].SetColor("_TintColor", clr);
+		renderer.materials[3].SetColor("_TintColor", clr);
+		renderer.materials[4].SetColor("_TintColor", clr);
+		renderer.materials[5].SetColor("_TintColor", clr);
+
+		if (alpha == 1) {
+			//Set THE one alpha
+			clr.a = 1;
+			renderer.materials[i].SetColor("_TintColor", clr);
+		}
+		else {
+			// set the circle alpha
+			renderer.materials[0].SetColor("_TintColor", origCircleColor);
+		}
 	}
 
 	public void addRandomForce()
