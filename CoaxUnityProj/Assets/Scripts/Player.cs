@@ -171,7 +171,6 @@ public class Player : MonoBehaviour {
             updateConvoDistance();
             if (canSpeak && Input.GetButtonDown("Fire1")) //Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) ||
             {
-                Debug.Log("speak");
                 speak();
             }
         }

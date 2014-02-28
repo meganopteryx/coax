@@ -38,10 +38,15 @@ public class StrangerBehavior : MonoBehaviour {
 
 	Color origTriangleColor;
 	Color origCircleColor;
-	
+
+	public AudioClip[] pulses;
+
+	MusicConductor musicConductor;
+
 	// Use this for initialization
     void Start()
 	{
+		musicConductor = GameObject.Find ("LevelController").GetComponent<MusicConductor>();
 		helpMessenger = GameObject.Find ("LevelController").GetComponent<HelpMessenger>();
 
         sndBombBlip = Resources.Load("bombBlip") as AudioClip;
@@ -54,6 +59,10 @@ public class StrangerBehavior : MonoBehaviour {
 		origCircleColor = renderer.materials[0].GetColor ("_TintColor");
 
 		SetTriangleAlpha (0);
+	}
+
+	public void PlayPulse(int index, float vol) {
+		audio.PlayOneShot(pulses[index], vol);
 	}
 
 	public void SetTriangleAlpha(float alpha) {
@@ -186,7 +195,11 @@ public class StrangerBehavior : MonoBehaviour {
 		rigidbody.angularVelocity = Vector3.zero;
         rigidbody.velocity = Vector3.zero;
 
-		StartCoroutine(sendPings());
+		// Start sending pings at the next musical measure
+		// (so they're singing to the rhythm)
+		musicConductor.AddMusicCallback(delegate() {
+			StartCoroutine(sendPings());
+		});
 	}
 	IEnumerator sendPings()
 	{
@@ -244,6 +257,8 @@ public class StrangerBehavior : MonoBehaviour {
 	{
 		revealed = true;
 		renderer.material.mainTexture = trueAppearances[strangerType]; //instant switch
+		musicConductor.unmuteTrack(strangerType+1);
+		PlayPulse(strangerType, 1.0f);
 	}
 	
 	public void follow()

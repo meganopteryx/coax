@@ -9,19 +9,12 @@ public class OmniPulse : MonoBehaviour {
     GameObject player;
     GameObject pulse;
     AudioClip sndPulse;
-
-	AudioClip squarePulse;
-	AudioClip hexPulse;
-	AudioClip pentPulse;
 	
 	// Use this for initialization
 	void Start ()
     {
         player = GameObject.Find("Player");
         sndPulse = Resources.Load("sndPulse") as AudioClip;
-        squarePulse = Resources.Load("squareResponse") as AudioClip;
-        hexPulse = Resources.Load("hexResponse") as AudioClip;
-        pentPulse = Resources.Load("pentResponse") as AudioClip;
 
 		// NOTE: the omni pulse is now fired by the MusicConductor script in LevelController
 		//	(to sync with the music)
@@ -75,7 +68,7 @@ public class OmniPulse : MonoBehaviour {
 				{
 					swapped.Add(obj);
 					StartCoroutine(coSwapEntity(obj));
-				}
+				}	
 				
 			}
 			yield return new WaitForSeconds(pulseFadeTime);
@@ -88,20 +81,14 @@ public class OmniPulse : MonoBehaviour {
 
     IEnumerator coSwapEntity(GameObject obj)
     {
-
+		StrangerBehavior stranger = obj.GetComponent<StrangerBehavior>();
+		
 		// Play random shape sound
-		int k = Random.Range(1,4);
-        float vol = 0.12f;
-		if(k == 1)
-        	audio.PlayOneShot(squarePulse, vol);
-		else if (k == 2)
-        	audio.PlayOneShot(pentPulse, vol);
-		else if (k == 3)
-        	audio.PlayOneShot(hexPulse, vol);
+		stranger.PlayPulse(Random.Range(0,3), 0.12f);
 
 		// Flash the triangle over the circle
-		obj.GetComponent<StrangerBehavior>().SetTriangleAlpha(1);
+		stranger.SetTriangleAlpha(1);
         yield return new WaitForSeconds(0.1f);
-		obj.GetComponent<StrangerBehavior>().SetTriangleAlpha(0);
+		stranger.SetTriangleAlpha(0);
     }
 }
