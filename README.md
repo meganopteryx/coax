@@ -11,6 +11,7 @@ Coax is an audio-visual experience. Navigate the space and interact with
 others. Coax them into showing their true form. 
 
 - [PLAY HERE](https://dl.dropboxusercontent.com/u/2334881/CoaxWeb/WebPlayer.html)
+- [PLAY POST-COMPO HERE](https://dl.dropboxusercontent.com/u/260831292/Coax-Post-Compo/play.html)
 - [Watch Video](http://www.youtube.com/watch?v=frcOn1aVcYs)
 - [Global Game Jam Page](http://globalgamejam.org/2014/games/coax)
 
